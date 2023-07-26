@@ -1,11 +1,11 @@
 # Block-removed Knowledge-distilled Stable Diffusion Model (BK-SDM)
 
-This is the official codebase for [BK-SDM: Architecturally Compressed Stable Diffusion for Efficient Text-to-Image Generation](https://openreview.net/forum?id=bOVydU0XKC), which has been accepted to [ICCV 2023 Demo Track](https://iccv2023.thecvf.com/) and [ICML 2023 Workshop on ES-FoMo](https://es-fomo.com/).
+This is the official codebase for [**BK-SDM: Architecturally Compressed Stable Diffusion for Efficient Text-to-Image Generation**](https://openreview.net/forum?id=bOVydU0XKC), which has been accepted to [ICCV 2023 Demo Track](https://iccv2023.thecvf.com/) and [ICML 2023 Workshop on ES-FoMo](https://es-fomo.com/).
 
 
 BK-SDMs are lightweight text-to-image synthesis models, achieved by compressing [Stable Diffusion v1.4](https://huggingface.co/CompVis/stable-diffusion-v1-4): 
   - Certain residual and attention blocks are eliminated from the U-Net of SDM-v1.4.
-  - Distillation pretraining is conducted with very limited training data, but it (surprisingly) remains effective.
+  - Distillation pretraining is conducted with very limited data, but it (surprisingly) remains effective.
 
 
 ## Installation
@@ -93,11 +93,12 @@ Note
 | [BK-SDM-Small](https://huggingface.co/nota-ai/bk-sdm-small) (Ours) | 16.98 | 31.68 | 0.2677 | 0.49B | 0.66B |
 | [BK-SDM-Tiny](https://huggingface.co/nota-ai/bk-sdm-tiny) (Ours) | 17.12 | 30.09 | 0.2653 | 0.33B | 0.50B |
 
+<center>
+    <img alt="Visual results" img src="https://huggingface.co/spaces/nota-ai/compressed-stable-diffusion/resolve/e6fb31631f0b2948cf6ec54006ea050d6c83e940/docs/fig_results.png" width="100%">
+</center>
 
 ## Gradio Demo
 Check out our [Gradio demo](https://huggingface.co/spaces/nota-ai/compressed-stable-diffusion) and the [codes](https://huggingface.co/spaces/nota-ai/compressed-stable-diffusion/tree/main) (main: app.py)!
-  - A free CPU is commonly used for the demo to control expenses😅; but we sometimes switch to T4 during special events.
-
 
 ## Model Description
 
