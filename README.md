@@ -7,6 +7,10 @@ BK-SDMs are lightweight text-to-image synthesis models, achieved by compressing 
   - Certain residual and attention blocks are eliminated from the U-Net of SDM-v1.4.
   - Distillation pretraining is conducted with very limited data, but it (surprisingly) remains effective.
 
+## Notice
+  - [Aug/02/2023] Recently, we came across an impressive implementation of [distill_training.py for BK-SDMs](https://github.com/segmind/distill-sd) from [Segmind](https://www.segmind.com/) (big thanks!). This appears to be quite similar and a valuable complement to ours. You may want to check it out, along with [a related blog post](https://huggingface.co/blog/sd_distillation).
+
+ 
 
 ## Installation
 ```bash
