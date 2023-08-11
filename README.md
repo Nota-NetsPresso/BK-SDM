@@ -3,12 +3,14 @@
 This is the official codebase for [**BK-SDM: Architecturally Compressed Stable Diffusion for Efficient Text-to-Image Generation**](https://openreview.net/forum?id=bOVydU0XKC), which has been accepted to [ICCV 2023 Demo Track](https://iccv2023.thecvf.com/) and [ICML 2023 Workshop on ES-FoMo](https://es-fomo.com/).
 
 
-BK-SDMs are lightweight text-to-image synthesis models, achieved by compressing [Stable Diffusion v1.4](https://huggingface.co/CompVis/stable-diffusion-v1-4): 
+BK-SDM-{[Base](https://huggingface.co/nota-ai/bk-sdm-base), [Small](https://huggingface.co/nota-ai/bk-sdm-small), [Tiny](https://huggingface.co/nota-ai/bk-sdm-tiny)} are lightweight text-to-image synthesis models, achieved by compressing [Stable Diffusion v1.4](https://huggingface.co/CompVis/stable-diffusion-v1-4): 
   - Certain residual and attention blocks are eliminated from the U-Net of SDM-v1.4.
   - Distillation pretraining is conducted with very limited data, but it (surprisingly) remains effective.
 
 ## Notice
-  - [Aug/02/2023] Recently, we came across an impressive implementation of [distill_training.py for BK-SDMs](https://github.com/segmind/distill-sd) from [Segmind](https://www.segmind.com/) (big thanks!). This appears to be quite similar and a valuable complement to ours. You may want to check it out, along with [a related blog post](https://huggingface.co/blog/sd_distillation).
+  - [Aug/12/2023] 🎉Release **our [training code](https://github.com/Nota-NetsPresso/BK-SDM#distillation-pretraining)** and **BK-SDM-[Small-2M](https://huggingface.co/nota-ai/bk-sdm-small-2m)** (trained with 10× more data). 
+    - MODEL_CARD.md includes [the process of distillation pretraining](https://github.com/Nota-NetsPresso/BK-SDM/MODEL_CARD.md#distillation-pretraining) and [results using various data volumes](https://github.com/Nota-NetsPresso/BK-SDM/MODEL_CARD.md#effect-of-different-data-sizes-for-training-bk-sdm-small).
+  - [Aug/02/2023] Segmind introduces [their BK-SDM implementation](https://github.com/segmind/distill-sd), big thanks!
 
  
 
@@ -90,43 +92,52 @@ Note
 - On a single 3090 GPU, '(2)' takes about 10 hours per model, and '(3)' takes a few minutes.
 
 ### Results on Zero-shot MS-COCO 256×256 30K
-| Model | FID↓ | IS↑ | CLIP Score↑<br>(ViT-g/14) | # Params,<br>U-Net | # Params,<br>Whole SDM |
-|:---:|:---:|:---:|:---:|:---:|:---:|
-| Stable Diffusion v1.4 | 13.05 | 36.76 | 0.2958 | 0.86B | 1.04B |
-| [BK-SDM-Base](https://huggingface.co/nota-ai/bk-sdm-base) (Ours) | 15.76 | 33.79 | 0.2878 | 0.58B | 0.76B |
-| [BK-SDM-Small](https://huggingface.co/nota-ai/bk-sdm-small) (Ours) | 16.98 | 31.68 | 0.2677 | 0.49B | 0.66B |
-| [BK-SDM-Tiny](https://huggingface.co/nota-ai/bk-sdm-tiny) (Ours) | 17.12 | 30.09 | 0.2653 | 0.33B | 0.50B |
+See [Results in MODEL_CARD.md](https://github.com/Nota-NetsPresso/BK-SDM/MODEL_CARD.md#results-on-ms-coco-benchmark)
 
-<center>
-    <img alt="Visual results" img src="https://huggingface.co/spaces/nota-ai/compressed-stable-diffusion/resolve/e6fb31631f0b2948cf6ec54006ea050d6c83e940/docs/fig_results.png" width="100%">
-</center>
+
+## Distillation Pretraining
+Our training code was based on [train_text_to_image.py](https://github.com/huggingface/diffusers/tree/v0.15.0/examples/text_to_image) of Diffusers `0.15.0.dev0`. To access the latest version, please use [this link](https://github.com/huggingface/diffusers/blob/main/examples/text_to_image/train_text_to_image.py).
+
+### [Optional] Toy to check runnability
+  ```bash
+  bash scripts/get_laion_data.sh preprocessed_11k
+  bash scripts/kd_train_toy.sh
+  ```
+- A toy dataset (11K img-txt pairs) will be downloaded at `./data/laion_aes/preprocessed_11k` (1.7GB in tar.gz; 1.8GB data folder).
+- A toy script can be used to verify the code executability and find the batch size that matches your GPU. With a batch size of `8` (=4×2), training BK-SDM-Base for 20 iterations takes about 5 minutes and 22GB GPU memory.
+
+### Script for BK-SDM-{[Base](https://huggingface.co/nota-ai/bk-sdm-base), [Small](https://huggingface.co/nota-ai/bk-sdm-small), [Tiny](https://huggingface.co/nota-ai/bk-sdm-tiny)}
+  ```bash
+  bash scripts/get_laion_data.sh preprocessed_212k
+  bash scripts/kd_train.sh
+  ```
+- The dataset with 212K (=0.22M) pairs will be downloaded at `./data/laion_aes/preprocessed_212k` (18GB tar.gz; 20GB data folder).
+- With a batch size of `256` (=4×64), training BK-SDM-Base for 50K iterations takes about 300 hours and 53GB GPU memory. With a batch size of `64` (=4×16), it takes 60 hours and 28GB GPU memory.
+- Training BK-SDM-{Small, Tiny} results in 5∼10% decrease in GPU memory usage.
+
+
+### Key code segments
+- Define Student U-Net by adjusting config.json [link]
+- Initialize Student U-Net by copying Teacher U-Net's weights [link]
+- Define hook locations for feature KD [link]
+- Define losses for feature-and-output KD [link]
+
+### Key learning hyperparams
+  ```
+  unet_config_name "bk_small" # option: ["bk_base", "bk_small", "bk_tiny"]
+  learning_rate 5e-05
+  train_batch_size 64
+  gradient_accumulation_steps 4
+  lambda_sd 1.0
+  lambda_kd_output 1.0
+  lambda_kd_feat 1.0
+  ```
 
 ## Gradio Demo
 Check out our [Gradio demo](https://huggingface.co/spaces/nota-ai/compressed-stable-diffusion) and the [codes](https://huggingface.co/spaces/nota-ai/compressed-stable-diffusion/tree/main) (main: app.py)!
 
 ## Model Description
-
-### U-Net Architecture
-We removed several residual and attention blocks from the 0.86B-parameter U-Net in the 1.04B-param SDM-v1.4, and our compressed models are summarized as follows.
-- [0.76B-param **BK-SDM-Base**](https://huggingface.co/nota-ai/bk-sdm-base) (0.58B-param U-Net): obtained with ① fewer blocks in outer stages.
-- [0.66B-param **BK-SDM-Small**](https://huggingface.co/nota-ai/bk-sdm-small) (0.49B-param U-Net): obtained with ① and ② mid-stage removal.
-- [0.50B-param **BK-SDM-Tiny**](https://huggingface.co/nota-ai/bk-sdm-tiny) (0.33B-param U-Net): obtained with ①, ②, and ③ further inner-stage removal.
-
-### Distillation Pretraining
-The compact U-Net was trained to mimic the behavior of the original U-Net. We leveraged feature-level and output-level distillation, along with the denoising task loss.
-
-<center>
-    <img alt="U-Net architectures and KD-based pretraining" img src="https://huggingface.co/spaces/nota-ai/compressed-stable-diffusion/resolve/e6fb31631f0b2948cf6ec54006ea050d6c83e940/docs/fig_model.png" width="100%">
-</center>
-
-<br/>
-
-- **Training Data**: 212,776 image-text pairs (i.e., 0.22M pairs) from [LAION-Aesthetics V2 6.5+](https://laion.ai/blog/laion-aesthetics/).
-- **Hardware:** A single NVIDIA A100 80GB GPU
-- **Gradient Accumulations**: 4
-- **Batch:** 256 (=4×64)
-- **Optimizer:** AdamW
-- **Learning Rate:** a constant learning rate of 5e-5 for 50K-iteration pretraining
+See [Compression Method in MODEL_CARD.md](https://github.com/Nota-NetsPresso/BK-SDM/MODEL_CARD.md#compression-method)
 
 
 ## License

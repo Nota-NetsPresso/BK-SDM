@@ -11,7 +11,7 @@ from utils.misc import get_file_list_from_csv, change_img_size
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_id", type=str, default="nota-ai/bk-sdm-small",
-                        choices=["CompVis/stable-diffusion-v1-4", "nota-ai/bk-sdm-base", "nota-ai/bk-sdm-small", "nota-ai/bk-sdm-tiny"])    
+                        help="CompVis/stable-diffusion-v1-4, nota-ai/bk-sdm-base, nota-ai/bk-sdm-small, nota-ai/bk-sdm-small-2m, nota-ai/bk-sdm-tiny")    
     parser.add_argument("--save_dir", type=str, default="./results/bk-sdm-small",
                         help="$save_dir$/{im256, im512} are created for saving 256x256 and 512x512 images")
     parser.add_argument("--data_list", type=str, default="./data/mscoco_val2014_30k/metadata.csv")    
