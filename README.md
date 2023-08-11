@@ -9,7 +9,7 @@ BK-SDM-{[Base](https://huggingface.co/nota-ai/bk-sdm-base), [Small](https://hugg
 
 ## Notice
   - [Aug/12/2023] 🎉Release **our [training code](https://github.com/Nota-NetsPresso/BK-SDM#distillation-pretraining)** and **BK-SDM-[Small-2M](https://huggingface.co/nota-ai/bk-sdm-small-2m)** (trained with 10× more data). 
-    - MODEL_CARD.md includes [the process of distillation pretraining](https://github.com/Nota-NetsPresso/BK-SDM/MODEL_CARD.md#distillation-pretraining) and [results using various data volumes](https://github.com/Nota-NetsPresso/BK-SDM/MODEL_CARD.md#effect-of-different-data-sizes-for-training-bk-sdm-small).
+    - MODEL_CARD.md includes [the process of distillation pretraining](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#distillation-pretraining) and [results using various data volumes](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#effect-of-different-data-sizes-for-training-bk-sdm-small).
   - [Aug/02/2023] Segmind introduces [their BK-SDM implementation](https://github.com/segmind/distill-sd), big thanks!
 
  
@@ -92,7 +92,7 @@ Note
 - On a single 3090 GPU, '(2)' takes about 10 hours per model, and '(3)' takes a few minutes.
 
 ### Results on Zero-shot MS-COCO 256×256 30K
-See [Results in MODEL_CARD.md](https://github.com/Nota-NetsPresso/BK-SDM/MODEL_CARD.md#results-on-ms-coco-benchmark)
+See [Results in MODEL_CARD.md](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#results-on-ms-coco-benchmark)
 
 
 ## Distillation Pretraining
@@ -117,10 +117,10 @@ Our training code was based on [train_text_to_image.py](https://github.com/huggi
 
 
 ### Key code segments
-- Define Student U-Net by adjusting config.json [link]
-- Initialize Student U-Net by copying Teacher U-Net's weights [link]
-- Define hook locations for feature KD [link]
-- Define losses for feature-and-output KD [link]
+- Define Student U-Net by adjusting config.json [[link](https://github.com/Nota-NetsPresso/BK-SDM/blob/c33c63bdf1865af9f6228132e35b4fd2bd4dd953/src/kd_train_text_to_image.py#L437-L438)]
+- Initialize Student U-Net by copying Teacher U-Net's weights [[link](https://github.com/Nota-NetsPresso/BK-SDM/blob/c33c63bdf1865af9f6228132e35b4fd2bd4dd953/src/kd_train_text_to_image.py#L72-L117)]
+- Define hook locations for feature KD [[link](https://github.com/Nota-NetsPresso/BK-SDM/blob/c33c63bdf1865af9f6228132e35b4fd2bd4dd953/src/kd_train_text_to_image.py#L693-L709)]
+- Define losses for feature-and-output KD [[link](https://github.com/Nota-NetsPresso/BK-SDM/blob/c33c63bdf1865af9f6228132e35b4fd2bd4dd953/src/kd_train_text_to_image.py#L758-L776)]
 
 ### Key learning hyperparams
   ```
@@ -137,7 +137,7 @@ Our training code was based on [train_text_to_image.py](https://github.com/huggi
 Check out our [Gradio demo](https://huggingface.co/spaces/nota-ai/compressed-stable-diffusion) and the [codes](https://huggingface.co/spaces/nota-ai/compressed-stable-diffusion/tree/main) (main: app.py)!
 
 ## Model Description
-See [Compression Method in MODEL_CARD.md](https://github.com/Nota-NetsPresso/BK-SDM/MODEL_CARD.md#compression-method)
+See [Compression Method in MODEL_CARD.md](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#compression-method)
 
 
 ## License
