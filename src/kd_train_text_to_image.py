@@ -705,6 +705,13 @@ def main():
         mapping_layers_stu = ['down_blocks.0', 'down_blocks.1', 'down_blocks.2.attentions.0.proj_out',
                                 'up_blocks.0', 'up_blocks.1', 'up_blocks.2']  
 
+    if torch.cuda.device_count() > 1:
+        print(f"use multi-gpu: # gpus {torch.cuda.device_count()}")
+        # revise the hooked feature names for student (to consider ddp wrapper)
+        for i, m_stu in enumerate(mapping_layers_stu):
+            mapping_layers_stu[i] = 'module.'+m_stu
+
+
     add_hook(unet_teacher, acts_tea, mapping_layers_tea)
     add_hook(unet, acts_stu, mapping_layers_stu)
 
@@ -767,6 +774,11 @@ def main():
 
                     if type(a_tea) is tuple: a_tea = a_tea[0]                        
                     if type(a_stu) is tuple: a_stu = a_stu[0]
+
+                    if epoch == 0 and step < 2:
+                        print("=====")
+                        print(f"Tea | {m_tea} | {a_tea.size()} | gpu {a_tea.device}")  
+                        print(f"Stu | {m_stu} | {a_stu.size()} | gpu {a_stu.device}")   
 
                     tmp = F.mse_loss(a_stu.float(), a_tea.detach().float(), reduction="mean")
                     losses_kd_feat.append(tmp)
