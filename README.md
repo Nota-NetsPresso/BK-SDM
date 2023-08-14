@@ -1,15 +1,15 @@
-# Block-removed Knowledge-distilled Stable Diffusion Model (BK-SDM)
+# Block-removed Knowledge-distilled Stable Diffusion
 
-This is the official codebase for [**BK-SDM: Architecturally Compressed Stable Diffusion for Efficient Text-to-Image Generation**](https://openreview.net/forum?id=bOVydU0XKC), which has been accepted to [ICCV 2023 Demo Track](https://iccv2023.thecvf.com/) and [ICML 2023 Workshop on ES-FoMo](https://es-fomo.com/).
+This is the official codebase for [**BK-SDM: Architecturally Compressed Stable Diffusion for Efficient Text-to-Image Generation**](https://openreview.net/forum?id=bOVydU0XKC) [[ICCV 2023 Demo Track](https://iccv2023.thecvf.com/)] [[ICML 2023 Workshop on ES-FoMo](https://es-fomo.com/)].
 
 
-BK-SDM-{[Base](https://huggingface.co/nota-ai/bk-sdm-base), [Small](https://huggingface.co/nota-ai/bk-sdm-small), [Tiny](https://huggingface.co/nota-ai/bk-sdm-tiny)} are lightweight text-to-image synthesis models, achieved by compressing [Stable Diffusion v1.4](https://huggingface.co/CompVis/stable-diffusion-v1-4): 
-  - Certain residual and attention blocks are eliminated from the U-Net of SDM-v1.4.
+BK-SDM-{[Base](https://huggingface.co/nota-ai/bk-sdm-base), [Small](https://huggingface.co/nota-ai/bk-sdm-small), [Tiny](https://huggingface.co/nota-ai/bk-sdm-tiny)} and {[Base-2M](https://huggingface.co/nota-ai/bk-sdm-base-2m), [Small-2M](https://huggingface.co/nota-ai/bk-sdm-small-2m), [Tiny-2M](https://huggingface.co/nota-ai/bk-sdm-tiny-2m)} are lightweight text-to-image synthesis models: 
+  - Certain residual and attention blocks are eliminated from the U-Net of [SD-v1.4](https://huggingface.co/CompVis/stable-diffusion-v1-4).
   - Distillation pretraining is conducted with very limited data, but it (surprisingly) remains effective.
 
 ## Notice
-  - [Aug/13/2023] Support multi-gpu training. 
-  - [Aug/12/2023] 🎉Release **our [training code](https://github.com/Nota-NetsPresso/BK-SDM#distillation-pretraining)** and **BK-SDM-[Small-2M](https://huggingface.co/nota-ai/bk-sdm-small-2m)** (trained with 10× more data). 
+  - [Aug/14/2023] Release BK-SDM-{[Base-2M](https://huggingface.co/nota-ai/bk-sdm-base-2m), [Small-2M](https://huggingface.co/nota-ai/bk-sdm-small-2m), [Tiny-2M](https://huggingface.co/nota-ai/bk-sdm-tiny-2m)} (trained with **10× more data**).
+  - [Aug/12/2023] 🎉Release **our [training code](https://github.com/Nota-NetsPresso/BK-SDM#distillation-pretraining)**, & Support multi-gpu training. 
     - MODEL_CARD.md includes [the process of distillation pretraining](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#distillation-pretraining) and [results using various data volumes](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#effect-of-different-data-sizes-for-training-bk-sdm-small).
   - [Aug/02/2023] Segmind introduces [their BK-SDM implementation](https://github.com/segmind/distill-sd), big thanks!
 
@@ -62,7 +62,7 @@ image.save("example.png")
 ## Evaluation on MS-COCO Benchmark
 We used the following codes to obtain the results on MS-COCO. After generating 512×512 images with the PNDM scheduler and 25 denoising steps, we downsampled them to 256×256 for computing scores.
 
-### Code (using [BK-SDM-Small](https://huggingface.co/nota-ai/bk-sdm-small) as default)
+### Code (using BK-SDM-[Small](https://huggingface.co/nota-ai/bk-sdm-small) as default)
 
 (1) Download `metadata.csv` and `real_im256.npz`:
   ```bash
@@ -130,13 +130,13 @@ Our training code was based on [train_text_to_image.py](https://github.com/huggi
 
 ### Key learning hyperparams
   ```
-  unet_config_name "bk_small" # option: ["bk_base", "bk_small", "bk_tiny"]
-  learning_rate 5e-05
-  train_batch_size 64
-  gradient_accumulation_steps 4
-  lambda_sd 1.0
-  lambda_kd_output 1.0
-  lambda_kd_feat 1.0
+  --unet_config_name "bk_small" # option: ["bk_base", "bk_small", "bk_tiny"]
+  --learning_rate 5e-05
+  --train_batch_size 64
+  --gradient_accumulation_steps 4
+  --lambda_sd 1.0
+  --lambda_kd_output 1.0
+  --lambda_kd_feat 1.0
   ```
 
 ## Gradio Demo
