@@ -8,6 +8,7 @@ BK-SDM-{[Base](https://huggingface.co/nota-ai/bk-sdm-base), [Small](https://hugg
   - Distillation pretraining is conducted with very limited data, but it (surprisingly) remains effective.
 
 ## Notice
+  - [Aug/13/2023] Support multi-gpu training. 
   - [Aug/12/2023] 🎉Release **our [training code](https://github.com/Nota-NetsPresso/BK-SDM#distillation-pretraining)** and **BK-SDM-[Small-2M](https://huggingface.co/nota-ai/bk-sdm-small-2m)** (trained with 10× more data). 
     - MODEL_CARD.md includes [the process of distillation pretraining](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#distillation-pretraining) and [results using various data volumes](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#effect-of-different-data-sizes-for-training-bk-sdm-small).
   - [Aug/02/2023] Segmind introduces [their BK-SDM implementation](https://github.com/segmind/distill-sd), big thanks!
@@ -115,12 +116,17 @@ Our training code was based on [train_text_to_image.py](https://github.com/huggi
 - With a batch size of `256` (=4×64), training BK-SDM-Base for 50K iterations takes about 300 hours and 53GB GPU memory. With a batch size of `64` (=4×16), it takes 60 hours and 28GB GPU memory.
 - Training BK-SDM-{Small, Tiny} results in 5∼10% decrease in GPU memory usage.
 
+### Multi-gpu training
+  ```bash
+  bash scripts/kd_train_toy_ddp.sh
+  ```
+- Multi-GPU training is supported (sample results: [link](https://github.com/Nota-NetsPresso/BK-SDM/issues/10#issuecomment-1676038203)), although all experiments for our paper were conducted using a single GPU. Thanks @youngwanLEE for sharing the script :)
 
-### Key code segments
-- Define Student U-Net by adjusting config.json [[link](https://github.com/Nota-NetsPresso/BK-SDM/blob/c33c63bdf1865af9f6228132e35b4fd2bd4dd953/src/kd_train_text_to_image.py#L437-L438)]
-- Initialize Student U-Net by copying Teacher U-Net's weights [[link](https://github.com/Nota-NetsPresso/BK-SDM/blob/c33c63bdf1865af9f6228132e35b4fd2bd4dd953/src/kd_train_text_to_image.py#L72-L117)]
-- Define hook locations for feature KD [[link](https://github.com/Nota-NetsPresso/BK-SDM/blob/c33c63bdf1865af9f6228132e35b4fd2bd4dd953/src/kd_train_text_to_image.py#L693-L709)]
-- Define losses for feature-and-output KD [[link](https://github.com/Nota-NetsPresso/BK-SDM/blob/c33c63bdf1865af9f6228132e35b4fd2bd4dd953/src/kd_train_text_to_image.py#L758-L776)]
+### Key segments for KD training
+- Define Student U-Net by adjusting config.json [[link](https://github.com/Nota-NetsPresso/BK-SDM/blob/5fc4a8be8076766d4c123b4916d0404f1f99b57b/src/kd_train_text_to_image.py#L437-L438)]
+- Initialize Student U-Net by copying Teacher U-Net's weights [[link](https://github.com/Nota-NetsPresso/BK-SDM/blob/5fc4a8be8076766d4c123b4916d0404f1f99b57b/src/kd_train_text_to_image.py#L72-L117)]
+- Define hook locations for feature KD [[link](https://github.com/Nota-NetsPresso/BK-SDM/blob/5fc4a8be8076766d4c123b4916d0404f1f99b57b/src/kd_train_text_to_image.py#L693-L715)]
+- Define losses for feature-and-output KD [[link](https://github.com/Nota-NetsPresso/BK-SDM/blob/5fc4a8be8076766d4c123b4916d0404f1f99b57b/src/kd_train_text_to_image.py#L764-L779)]
 
 ### Key learning hyperparams
   ```
