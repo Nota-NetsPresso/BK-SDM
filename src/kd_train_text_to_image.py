@@ -705,6 +705,12 @@ def main():
         mapping_layers_stu = ['down_blocks.0', 'down_blocks.1', 'down_blocks.2.attentions.0.proj_out',
                                 'up_blocks.0', 'up_blocks.1', 'up_blocks.2']  
 
+    if torch.cuda.device_count() > 1:
+        print(f"use multi-gpu: # gpus {torch.cuda.device_count()}")
+        # revise the hooked feature names for student (to consider ddp wrapper)
+        for i, m_stu in enumerate(mapping_layers_stu):
+            mapping_layers_stu[i] = 'module.'+m_stu
+
     add_hook(unet_teacher, acts_tea, mapping_layers_tea)
     add_hook(unet, acts_stu, mapping_layers_stu)
 
@@ -774,7 +780,6 @@ def main():
 
                 # Compute the final loss
                 loss = args.lambda_sd * loss_sd + args.lambda_kd_output * loss_kd_output + args.lambda_kd_feat * loss_kd_feat
-
 
                 # Gather the losses across all processes for logging (if we use distributed training).
                 avg_loss = accelerator.gather(loss.repeat(args.train_batch_size)).mean()
