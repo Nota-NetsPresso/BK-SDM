@@ -711,7 +711,6 @@ def main():
         for i, m_stu in enumerate(mapping_layers_stu):
             mapping_layers_stu[i] = 'module.'+m_stu
 
-
     add_hook(unet_teacher, acts_tea, mapping_layers_tea)
     add_hook(unet, acts_stu, mapping_layers_stu)
 
@@ -775,18 +774,12 @@ def main():
                     if type(a_tea) is tuple: a_tea = a_tea[0]                        
                     if type(a_stu) is tuple: a_stu = a_stu[0]
 
-                    if epoch == 0 and step < 2:
-                        print("=====")
-                        print(f"Tea | {m_tea} | {a_tea.size()} | gpu {a_tea.device}")  
-                        print(f"Stu | {m_stu} | {a_stu.size()} | gpu {a_stu.device}")   
-
                     tmp = F.mse_loss(a_stu.float(), a_tea.detach().float(), reduction="mean")
                     losses_kd_feat.append(tmp)
                 loss_kd_feat = sum(losses_kd_feat)
 
                 # Compute the final loss
                 loss = args.lambda_sd * loss_sd + args.lambda_kd_output * loss_kd_output + args.lambda_kd_feat * loss_kd_feat
-
 
                 # Gather the losses across all processes for logging (if we use distributed training).
                 avg_loss = accelerator.gather(loss.repeat(args.train_batch_size)).mean()
