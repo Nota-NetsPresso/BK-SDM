@@ -8,8 +8,6 @@ import time
 from utils.inference_pipeline import InferencePipeline
 from utils.misc import get_file_list_from_csv, change_img_size
 
-
-
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_id", type=str, default="nota-ai/bk-sdm-small",
@@ -35,7 +33,6 @@ if __name__ == "__main__":
                                 seed = args.seed,
                                 device = args.device)
     pipeline.set_pipe_and_generator()    
-
 
     if args.unet_path is not None: # use a separate trained unet for generation
         if args.model_id != "CompVis/stable-diffusion-v1-4" and not args.model_id.startswith("nota-ai/bk-sdm"):
