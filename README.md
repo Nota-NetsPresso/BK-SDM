@@ -9,7 +9,7 @@ BK-SDM-{[Base](https://huggingface.co/nota-ai/bk-sdm-base), [Small](https://hugg
 
 ## Notice
   - [Aug/14/2023] Release BK-SDM-{[Base-2M](https://huggingface.co/nota-ai/bk-sdm-base-2m), [Small-2M](https://huggingface.co/nota-ai/bk-sdm-small-2m), [Tiny-2M](https://huggingface.co/nota-ai/bk-sdm-tiny-2m)} (trained with **10× more data**).
-  - [Aug/12/2023] 🎉Release **our [training code](https://github.com/Nota-NetsPresso/BK-SDM#distillation-pretraining)**, & Support multi-gpu training. 
+  - [Aug/12/2023] 🎉**Release our [training code](https://github.com/Nota-NetsPresso/BK-SDM#distillation-pretraining)**, & Support multi-gpu training. 
     - MODEL_CARD.md includes [the process of distillation pretraining](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#distillation-pretraining) and [results using various data volumes](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#effect-of-different-data-sizes-for-training-bk-sdm-small).
   - [Aug/02/2023] Segmind introduces [their BK-SDM implementation](https://github.com/segmind/distill-sd), big thanks!
 
@@ -63,6 +63,7 @@ image.save("example.png")
 We used the following codes to obtain the results on MS-COCO. After generating 512×512 images with the PNDM scheduler and 25 denoising steps, we downsampled them to 256×256 for computing scores.
 
 ### Code (using BK-SDM-[Small](https://huggingface.co/nota-ai/bk-sdm-small) as default)
+- On a single 3090 GPU, '(2)' takes ~10 hours per model, and '(3)' takes a few minutes.
 
 (1) Download `metadata.csv` and `real_im256.npz`:
   ```bash
@@ -87,10 +88,16 @@ We used the following codes to obtain the results on MS-COCO. After generating 5
 
   # For the other models, modify the `./results/bk-sdm-*` path in the scripts to specify different models.
   ```
-Note
-- Following the evaluation protocol [[DALL·E](https://arxiv.org/abs/2102.12092), [Imagen](https://arxiv.org/abs/2205.11487)], the FID stat for real images was computed over the full validation set (41K images) of MS-COCO. A precomputed stat file is downloaded via '(1)' at `./data/mscoco_val2014_41k_full/real_im256.npz`.
-  - Additionally, `real_im256.npz` can be computed with `python3 src/get_stat_mscoco_val2014.py`, which downloads the whole images, resizes them to 256×256, and computes the FID stat.
-- On a single 3090 GPU, '(2)' takes about 10 hours per model, and '(3)' takes a few minutes.
+
+<details>
+<summary>
+Note on (1) ./data/mscoco_val2014_41k_full/real_im256.npz
+</summary>
+
+* Following the evaluation protocol [[DALL·E](https://arxiv.org/abs/2102.12092), [Imagen](https://arxiv.org/abs/2205.11487)], the FID stat for real images was computed over the full validation set (41K images) of MS-COCO. A precomputed stat file is downloaded via '(1)' at `./data/mscoco_val2014_41k_full/real_im256.npz`.
+* Additionally, `real_im256.npz` can be computed with `python3 src/get_stat_mscoco_val2014.py`, which downloads the whole images, resizes them to 256×256, and computes the FID stat.
+
+</details>
 
 ### Results on Zero-shot MS-COCO 256×256 30K
 See [Results in MODEL_CARD.md](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#results-on-ms-coco-benchmark)
@@ -107,7 +114,7 @@ Our training code was based on [train_text_to_image.py](https://github.com/huggi
 - A toy dataset (11K img-txt pairs) will be downloaded at `./data/laion_aes/preprocessed_11k` (1.7GB in tar.gz; 1.8GB data folder).
 - A toy script can be used to verify the code executability and find the batch size that matches your GPU. With a batch size of `8` (=4×2), training BK-SDM-Base for 20 iterations takes about 5 minutes and 22GB GPU memory.
 
-### Script for BK-SDM-{[Base](https://huggingface.co/nota-ai/bk-sdm-base), [Small](https://huggingface.co/nota-ai/bk-sdm-small), [Tiny](https://huggingface.co/nota-ai/bk-sdm-tiny)}
+### Single-gpu training for BK-SDM-{[Base](https://huggingface.co/nota-ai/bk-sdm-base), [Small](https://huggingface.co/nota-ai/bk-sdm-small), [Tiny](https://huggingface.co/nota-ai/bk-sdm-tiny)}
   ```bash
   bash scripts/get_laion_data.sh preprocessed_212k
   bash scripts/kd_train.sh
@@ -122,6 +129,13 @@ Our training code was based on [train_text_to_image.py](https://github.com/huggi
   ```
 - Multi-GPU training is supported (sample results: [link](https://github.com/Nota-NetsPresso/BK-SDM/issues/10#issuecomment-1676038203)), although all experiments for our paper were conducted using a single GPU. Thanks @youngwanLEE for sharing the script :)
 
+### [After training] Generation with a trained U-Net
+  ```bash
+  bash scripts/generate_with_trained_unet.sh
+  ```
+- A trained U-Net is used for [Step (2) of the benchmark evaluation](https://github.com/Nota-NetsPresso/BK-SDM#code-using-bk-sdm-small-as-default).
+- To test with [a specific checkpoint](https://github.com/Nota-NetsPresso/BK-SDM/blob/60939ebaea65271579df734cb3ad44e1f84ca18f/scripts/generate_with_trained_unet.sh#L26), modify `--unet_path` by referring to [the example directory structure](https://github.com/Nota-NetsPresso/BK-SDM/blob/60939ebaea65271579df734cb3ad44e1f84ca18f/scripts/generate_with_trained_unet.sh#L7-L17).
+
 ### Key segments for KD training
 - Define Student U-Net by adjusting config.json [[link](https://github.com/Nota-NetsPresso/BK-SDM/blob/5fc4a8be8076766d4c123b4916d0404f1f99b57b/src/kd_train_text_to_image.py#L437-L438)]
 - Initialize Student U-Net by copying Teacher U-Net's weights [[link](https://github.com/Nota-NetsPresso/BK-SDM/blob/5fc4a8be8076766d4c123b4916d0404f1f99b57b/src/kd_train_text_to_image.py#L72-L117)]
@@ -131,6 +145,7 @@ Our training code was based on [train_text_to_image.py](https://github.com/huggi
 ### Key learning hyperparams
   ```
   --unet_config_name "bk_small" # option: ["bk_base", "bk_small", "bk_tiny"]
+  --use_copy_weight_from_teacher # initialize student unet with teacher weights
   --learning_rate 5e-05
   --train_batch_size 64
   --gradient_accumulation_steps 4
