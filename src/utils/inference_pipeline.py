@@ -23,9 +23,7 @@ class InferencePipeline:
         gc.collect()
 
     def set_pipe_and_generator(self): 
-        self.pipe = StableDiffusionPipeline.from_pretrained(self.weight_folder,                                                            
-                                                            use_auth_token=True,
-                                                       torch_dtype=torch.float16).to(self.device)
+        self.pipe = StableDiffusionPipeline.from_pretrained(self.weight_folder, torch_dtype=torch.float16).to(self.device)
         self.generator = torch.Generator(device=self.device).manual_seed(self.seed)
 
         # **ONLY for the benchmark evaluation,** turn off NSFW filter to avoid black images
