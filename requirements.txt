@@ -6,3 +6,4 @@ pytorch-fid==0.3.0
 open_clip_torch==2.18.0
 accelerate==0.18.0
 datasets==2.11.0
+peft==0.2.0
