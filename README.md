@@ -3,15 +3,16 @@
 This is the official codebase for [**BK-SDM: Architecturally Compressed Stable Diffusion for Efficient Text-to-Image Generation**](https://openreview.net/forum?id=bOVydU0XKC) [[ICCV 2023 Demo Track](https://iccv2023.thecvf.com/)] [[ICML 2023 Workshop on ES-FoMo](https://es-fomo.com/)].
 
 
-BK-SDMs are lightweight text-to-image synthesis models: 
+BK-SDMs are lightweight text-to-image (T2I) synthesis models: 
   - Certain residual and attention blocks are eliminated from the U-Net of [SD-v1.4](https://huggingface.co/CompVis/stable-diffusion-v1-4).
   - Distillation pretraining is conducted with very limited data, but it (surprisingly) remains effective.
 
-⚡Quick Links: [KD Pretraining](https://github.com/Nota-NetsPresso/BK-SDM#distillation-pretraining) | [Evaluation on MS-COCO](https://github.com/Nota-NetsPresso/BK-SDM#evaluation-on-ms-coco-benchmark) | [Demo](https://github.com/Nota-NetsPresso/BK-SDM#gradio-demo)
+⚡Quick Links: [KD Pretraining](https://github.com/Nota-NetsPresso/BK-SDM#distillation-pretraining) | [Evaluation on MS-COCO](https://github.com/Nota-NetsPresso/BK-SDM#evaluation-on-ms-coco-benchmark) | [DreamBooth Finetuning](https://github.com/Nota-NetsPresso/BK-SDM#dreambooth-finetuning-with-peft) | [Demo](https://github.com/Nota-NetsPresso/BK-SDM#gradio-demo)
 
 ## Notice
-  - [Aug/14/2023] Release BK-SDM-*-2M (trained with **10× more data**).
-  - [Aug/12/2023] 🎉**Release [training code](https://github.com/Nota-NetsPresso/BK-SDM#distillation-pretraining)**, & Support multi-gpu training. 
+  - [Aug/20/2023] Release finetuning code for personalized T2I.
+  - [Aug/14/2023] Release BK-SDM-*-2M models (trained with **10× more data**).
+  - [Aug/12/2023] 🎉**Release pretraining code** for general-purpose T2I. 
     - MODEL_CARD.md includes [the process of distillation pretraining](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#distillation-pretraining) and [results using various data volumes](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#effect-of-different-data-sizes-for-training-bk-sdm-small).
   - [Aug/02/2023] [Segmind](https://www.segmind.com/) introduces [their BK-SDM implementation](https://github.com/segmind/distill-sd), big thanks!
   - [Aug/01/2023] Hugging Face [Spaces of the week 🔥](https://huggingface.co/spaces) introduces [our demo](https://huggingface.co/spaces/nota-ai/compressed-stable-diffusion), many thanks!
@@ -148,7 +149,7 @@ On a single 3090 GPU, '(2)' takes ~10 hours per model, and '(3)' takes a few min
 
   <details>
   <summary>
-  Note on (1) ./data/mscoco_val2014_41k_full/real_im256.npz
+  Note on 'real_im256.npz'
   </summary>
 
   * Following the evaluation protocol [[DALL·E](https://arxiv.org/abs/2102.12092), [Imagen](https://arxiv.org/abs/2205.11487)], the FID stat for real images was computed over the full validation set (41K images) of MS-COCO. A precomputed stat file is downloaded via '(1)' at `./data/mscoco_val2014_41k_full/real_im256.npz`.
@@ -175,13 +176,43 @@ On a single 3090 GPU, '(2)' takes ~10 hours per model, and '(3)' takes a few min
 See [Results in MODEL_CARD.md](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#results-on-ms-coco-benchmark)
 
 
+## DreamBooth Finetuning with 🤗[PEFT](https://github.com/huggingface/peft)
+
+Our lightweight SD backbones can be used for efficient personalized generation. [DreamBooth](https://arxiv.org/abs/2208.12242) refines text-to-image diffusion models given a small number of images. DreamBooth+[LoRA](https://arxiv.org/abs/2106.09685) can drastically reduce finetuning cost.
+
+#### DreamBooth dataset 
+The dataset is downloaded at `./data/dreambooth/dataset` [[folder tree](https://github.com/google/dreambooth/tree/main/dataset)]: 30 subjects × 25 prompts × 4∼6 images.
+
+  ```bash
+  git clone https://github.com/google/dreambooth ./data/dreambooth
+  ```
+
+#### DreamBooth finetuning (using BK-SDM-[Base](https://huggingface.co/nota-ai/bk-sdm-base) as default)
+Our code was based on [train_dreambooth.py](https://github.com/huggingface/peft/tree/v0.1.0#parameter-efficient-tuning-of-diffusion-models) of PEFT `0.1.0`. To access the latest version, use [this link](https://github.com/huggingface/peft/blob/main/examples/lora_dreambooth/train_dreambooth.py).
+
+- (1) **without LoRA** — full finetuning & used in our paper
+  ```bash
+  bash scripts/finetune_full.sh # learning rate 1e-6
+  bash scripts/generate_after_full_ft.sh
+  ```
+- (2) **with LoRA** — parameter-efficient finetuning
+  ```bash
+  bash scripts/finetune_lora.sh # learning rate 1e-4
+  bash scripts/generate_after_lora_ft.sh  
+  ```
+- On a single 3090 GPU, finetuning takes 10~20 minutes per subject.
+
+#### Results of Personalized Generation
+See [DreamBooth Results in MODEL_CARD.md](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#personalized-generation-full-finetuning)
+
+
 ## Gradio Demo
 Check out our [Gradio demo](https://huggingface.co/spaces/nota-ai/compressed-stable-diffusion) and the [codes](https://huggingface.co/spaces/nota-ai/compressed-stable-diffusion/tree/main) (main: app.py)!
     <details>
     <summary>
     [Aug/01/2023] featured in Hugging Face [Spaces of the week 🔥](https://huggingface.co/spaces)
     </summary>
-    <img alt="Training progress with different data sizes" img src="https://netspresso-research-code-release.s3.us-east-2.amazonaws.com/assets-bk-sdm/screenshot_spaces_of_the_week.png" width="100%">
+    <img alt="Spaces of the week" img src="https://netspresso-research-code-release.s3.us-east-2.amazonaws.com/assets-bk-sdm/screenshot_spaces_of_the_week.png" width="100%">
     </details>
     
 ## License
@@ -196,8 +227,8 @@ This project, along with its weights, is subject to the [CreativeML Open RAIL-M 
 
 ## Acknowledgments
 - We express our gratitude to [Microsoft for Startups Founders Hub](https://www.microsoft.com/en-us/startups) for generously providing the Azure credits used during pretraining.
-- We deeply appreciate the pioneering research on Latent/Stable Diffusion conducted by [CompVis](https://github.com/CompVis/latent-diffusion), [Runway](https://runwayml.com/), and [Stability AI](https://stability.ai/).
-- Special thanks to the contributors to [LAION](https://laion.ai/), [Diffusers](https://github.com/huggingface/diffusers), and [Gradio](https://www.gradio.app/) for their valuable support.
+- We appreciate the pioneering research on Stable Diffusion conducted by [CompVis](https://github.com/CompVis/latent-diffusion), [Runway](https://runwayml.com/), and [Stability AI](https://stability.ai/).
+- Special thanks to the contributors to [LAION](https://laion.ai/), [Diffusers](https://github.com/huggingface/diffusers), [PEFT](https://github.com/huggingface/peft), [DreamBooth](https://dreambooth.github.io/) and [Gradio](https://www.gradio.app/) for their valuable support.
 
 
 ## Citation
