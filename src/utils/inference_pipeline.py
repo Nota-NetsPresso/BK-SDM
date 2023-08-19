@@ -3,9 +3,12 @@
 # Code modified from https://huggingface.co/blog/stable_diffusion
 # ------------------------------------------------------------------------------------
 
+import diffusers
 from diffusers import StableDiffusionPipeline
 import torch
 import gc
+
+diffusers_version = int(diffusers.__version__.split('.')[1])
 
 class InferencePipeline:
     def __init__(self, weight_folder, seed, device):
@@ -23,11 +26,18 @@ class InferencePipeline:
         gc.collect()
 
     def set_pipe_and_generator(self): 
-        self.pipe = StableDiffusionPipeline.from_pretrained(self.weight_folder, torch_dtype=torch.float16).to(self.device)
-        self.generator = torch.Generator(device=self.device).manual_seed(self.seed)
+        # disable NSFW filter to avoid black images, **ONLY for the benchmark evaluation** 
+        if diffusers_version == 15: # for the specified version in requirements.txt
+            self.pipe = StableDiffusionPipeline.from_pretrained(self.weight_folder,
+                                                                torch_dtype=torch.float16).to(self.device)
+            self.pipe.safety_checker = lambda images, clip_input: (images, False) 
+        elif diffusers_version >= 19: # for recent diffusers versions
+            self.pipe = StableDiffusionPipeline.from_pretrained(self.weight_folder,
+                                                                safety_checker=None, torch_dtype=torch.float16).to(self.device)
+        else: # for the versions between 0.15 and 0.19, the benchmark scores are not guaranteed.
+            raise Exception(f"Use diffusers version as either ==0.15.0 or >=0.19 (from current {diffusers.__version__})")
 
-        # **ONLY for the benchmark evaluation,** turn off NSFW filter to avoid black images
-        self.pipe.safety_checker = lambda images, clip_input: (images, False) 
+        self.generator = torch.Generator(device=self.device).manual_seed(self.seed)
 
     def generate(self, prompt: str, n_steps: int, img_sz: int):
         out = self.pipe(
