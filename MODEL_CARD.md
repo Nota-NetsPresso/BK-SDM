@@ -41,7 +41,7 @@ The following table shows the results on 30K samples from the MS-COCO validation
 - Our models were drawn at the 50K-th training iteration.
 
 | Model | FID↓ | IS↑ | CLIP Score↑<br>(ViT-g/14) | # Params,<br>U-Net | # Params,<br>Whole SDM |
-|:---:|:---:|:---:|:---:|:---:|:---:|
+|---|:---:|:---:|:---:|:---:|:---:|
 | [Stable Diffusion v1.4](https://huggingface.co/CompVis/stable-diffusion-v1-4) | 13.05 | 36.76 | 0.2958 | 0.86B | 1.04B |
 | [BK-SDM-Base](https://huggingface.co/nota-ai/bk-sdm-base) (Ours) | 15.76 | 33.79 | 0.2878 | 0.58B | 0.76B |
 | [BK-SDM-Base-2M](https://huggingface.co/nota-ai/bk-sdm-base-2m) (Ours) | 14.81 | 34.17 | 0.2883 | 0.58B | 0.76B |
@@ -73,4 +73,14 @@ Furthermore, with the growth in data volume, visual results become more favorabl
 
 <center>
     <img alt="additional visual examples" img src="https://netspresso-research-code-release.s3.us-east-2.amazonaws.com/assets-bk-sdm/fig_results_models_2m.png" width="100%">
+</center>
+
+
+## Personalized Generation (Full Finetuning)
+To show the applicability of our lightweight SD backbones, we use [DreamBooth](https://arxiv.org/abs/2208.12242) finetuning for personalized generation.
+- Each subject is marked as "a [identifier] [class noun]" (e.g., "a [V] dog").
+- Our BK-SDMs can synthesize the input subjects in different backgrounds while preserving their appearance.
+
+<center>
+    <img alt="dreambooth results" img src="https://netspresso-research-code-release.s3.us-east-2.amazonaws.com/assets-bk-sdm/fig_results_dreambooth.png" width="100%">
 </center>
