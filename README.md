@@ -10,6 +10,7 @@ BK-SDMs are lightweight text-to-image (T2I) synthesis models:
 ⚡Quick Links: [KD Pretraining](https://github.com/Nota-NetsPresso/BK-SDM#distillation-pretraining) | [Evaluation on MS-COCO](https://github.com/Nota-NetsPresso/BK-SDM#evaluation-on-ms-coco-benchmark) | [DreamBooth Finetuning](https://github.com/Nota-NetsPresso/BK-SDM#dreambooth-finetuning-with-peft) | [Demo](https://github.com/Nota-NetsPresso/BK-SDM#gradio-demo)
 
 ## Notice
+  - [Aug/23/2023] Release Core ML BK-SDM weights for IOS and macOS.
   - [Aug/20/2023] Release finetuning code for personalized T2I.
   - [Aug/14/2023] Release BK-SDM-*-2M models (trained with **10× more data**).
   - [Aug/12/2023] 🎉**Release pretraining code** for general-purpose T2I. 
@@ -215,6 +216,10 @@ Check out our [Gradio demo](https://huggingface.co/spaces/nota-ai/compressed-sta
     <img alt="Spaces of the week" img src="https://netspresso-research-code-release.s3.us-east-2.amazonaws.com/assets-bk-sdm/screenshot_spaces_of_the_week.png" width="100%">
     </details>
     
+## Core ML Weights
+
+We have converted our models to Core ML format so that you can integrate BK-SDM into your iOS or macOS applications. You can download them [on HuggingFace](https://huggingface.co/nota-ai/coreml-bk-sdm), and you can load them using the [Core ML Stable Diffusion library](https://github.com/apple/ml-stable-diffusion).
+
 ## License
 This project, along with its weights, is subject to the [CreativeML Open RAIL-M license](LICENSE), which aims to mitigate any potential negative effects arising from the use of highly advanced machine learning systems. [A summary of this license](https://huggingface.co/blog/stable_diffusion#license) is as follows.
 
