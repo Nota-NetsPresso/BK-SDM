@@ -10,7 +10,7 @@ BK-SDMs are lightweight text-to-image (T2I) synthesis models:
 ⚡Quick Links: [KD Pretraining](https://github.com/Nota-NetsPresso/BK-SDM#distillation-pretraining) | [Evaluation on MS-COCO](https://github.com/Nota-NetsPresso/BK-SDM#evaluation-on-ms-coco-benchmark) | [DreamBooth Finetuning](https://github.com/Nota-NetsPresso/BK-SDM#dreambooth-finetuning-with-peft) | [Demo](https://github.com/Nota-NetsPresso/BK-SDM#gradio-demo)
 
 ## Notice
-  - [Aug/23/2023] Release Core ML BK-SDM weights for IOS and macOS.
+  - [Aug/23/2023] Release Core ML weights of BK-SDMs for iOS and macOS.
   - [Aug/20/2023] Release finetuning code for personalized T2I.
   - [Aug/14/2023] Release BK-SDM-*-2M models (trained with **10× more data**).
   - [Aug/12/2023] 🎉**Release pretraining code** for general-purpose T2I. 
@@ -217,8 +217,7 @@ Check out our [Gradio demo](https://huggingface.co/spaces/nota-ai/compressed-sta
     </details>
     
 ## Core ML Weights
-
-We have converted our models to Core ML format so that you can integrate BK-SDM into your iOS or macOS applications. You can download them [on HuggingFace](https://huggingface.co/nota-ai/coreml-bk-sdm), and you can load them using the [Core ML Stable Diffusion library](https://github.com/apple/ml-stable-diffusion).
+For iOS or macOS applications, we have converted our models to Core ML format. They are available at 🤗Hugging Face Models ([nota-ai/coreml-bk-sdm](https://huggingface.co/nota-ai/coreml-bk-sdm)) and can be used with Apple's [Core ML Stable Diffusion library](https://github.com/apple/ml-stable-diffusion).
 
 ## License
 This project, along with its weights, is subject to the [CreativeML Open RAIL-M license](LICENSE), which aims to mitigate any potential negative effects arising from the use of highly advanced machine learning systems. [A summary of this license](https://huggingface.co/blog/stable_diffusion#license) is as follows.
@@ -231,9 +230,9 @@ This project, along with its weights, is subject to the [CreativeML Open RAIL-M 
 
 
 ## Acknowledgments
-- We express our gratitude to [Microsoft for Startups Founders Hub](https://www.microsoft.com/en-us/startups) for generously providing the Azure credits used during pretraining.
-- We appreciate the pioneering research on Stable Diffusion conducted by [CompVis](https://github.com/CompVis/latent-diffusion), [Runway](https://runwayml.com/), and [Stability AI](https://stability.ai/).
-- Special thanks to the contributors to [LAION](https://laion.ai/), [Diffusers](https://github.com/huggingface/diffusers), [PEFT](https://github.com/huggingface/peft), [DreamBooth](https://dreambooth.github.io/) and [Gradio](https://www.gradio.app/) for their valuable support.
+- [Microsoft for Startups Founders Hub](https://www.microsoft.com/en-us/startups) for generously providing the Azure credits used during pretraining.
+- [CompVis](https://github.com/CompVis/latent-diffusion), [Runway](https://runwayml.com/), and [Stability AI](https://stability.ai/) for the pioneering research on Stable Diffusion.
+- [LAION](https://laion.ai/), [Diffusers](https://github.com/huggingface/diffusers), [PEFT](https://github.com/huggingface/peft), [DreamBooth](https://dreambooth.github.io/), [Gradio](https://www.gradio.app/), and [Core ML Stable Diffusion](https://github.com/apple/ml-stable-diffusion) for their valuable contributions.
 
 
 ## Citation
