@@ -1,7 +1,9 @@
 torch<2.0.0
-transformers==4.29.2
+transformers==4.27.4
 diffusers==0.15.0
 torch-fidelity==0.3.0
 pytorch-fid==0.3.0
 open_clip_torch==2.18.0
-accelerate==0.17.0
+accelerate==0.18.0
+datasets==2.11.0
+peft==0.2.0
