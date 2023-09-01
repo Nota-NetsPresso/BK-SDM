@@ -1,4 +1,6 @@
 results/bk-sdm-*
+results/kd_*
+results/toy_*
 data/mscoco_val2014_30k/metadata.csv
 data/mscoco_val2014_41k_full/real_im256.npz
 data/mscoco_val2014_41k_full/val*
