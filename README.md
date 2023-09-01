@@ -21,7 +21,9 @@ BK-SDMs are lightweight text-to-image (T2I) synthesis models:
  
 ## Model Description
 - See [Compression Method in MODEL_CARD.md](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#compression-method)
-- Available at 🤗Hugging Face Models: BK-SDM-{[Base](https://huggingface.co/nota-ai/bk-sdm-base), [Small](https://huggingface.co/nota-ai/bk-sdm-small), [Tiny](https://huggingface.co/nota-ai/bk-sdm-tiny)} and {[Base-2M](https://huggingface.co/nota-ai/bk-sdm-base-2m), [Small-2M](https://huggingface.co/nota-ai/bk-sdm-small-2m), [Tiny-2M](https://huggingface.co/nota-ai/bk-sdm-tiny-2m)}
+- Available at 🤗Hugging Face Models
+  - BK-SDM-{[Base](https://huggingface.co/nota-ai/bk-sdm-base), [Small](https://huggingface.co/nota-ai/bk-sdm-small), [Tiny](https://huggingface.co/nota-ai/bk-sdm-tiny)}: trained with 0.22M LAION pairs, 50K training iterations. 
+  - BK-SDM-{[Base-2M](https://huggingface.co/nota-ai/bk-sdm-base-2m), [Small-2M](https://huggingface.co/nota-ai/bk-sdm-small-2m), [Tiny-2M](https://huggingface.co/nota-ai/bk-sdm-tiny-2m)}: 2.3M LAION pairs, 50K training iterations.
 
 
 ## Installation
@@ -88,11 +90,22 @@ Our code was based on [train_text_to_image.py](https://github.com/huggingface/di
 - With a batch size of `256` (=4×64), training BK-SDM-Base for 50K iterations takes about 300 hours and 53GB GPU memory. With a batch size of `64` (=4×16), it takes 60 hours and 28GB GPU memory.
 - Training BK-SDM-{Small, Tiny} results in 5∼10% decrease in GPU memory usage.
 
+
+#### Single-gpu training for BK-SDM-{[Base-2M](https://huggingface.co/nota-ai/bk-sdm-base-2m), [Small-2M](https://huggingface.co/nota-ai/bk-sdm-small-2m), [Tiny-2M](https://huggingface.co/nota-ai/bk-sdm-tiny-2m)}
+  ```bash
+  bash scripts/get_laion_data.sh preprocessed_2256k
+  bash scripts/kd_train_2m.sh
+  ```
+- The dataset with 2256K (=2.3M) pairs is downloaded at `./data/laion_aes/preprocessed_2256k` (182GB tar.gz; 204GB data folder).
+- Except the dataset, `kd_train_2m.sh` is the same as `kd_train.sh`; given the same number of iterations, the training computation remains identical.
+
 #### Multi-gpu training
   ```bash
   bash scripts/kd_train_toy_ddp.sh
   ```
 - Multi-GPU training is supported (sample results: [link](https://github.com/Nota-NetsPresso/BK-SDM/issues/10#issuecomment-1676038203)), although all experiments for our paper were conducted using a single GPU. Thanks [@youngwanLEE](https://github.com/youngwanLEE) for sharing the script :)
+
+
 
 #### [After training] Generation with a trained U-Net
   ```bash
