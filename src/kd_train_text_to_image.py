@@ -53,6 +53,13 @@ import csv
 import time
 import copy
 
+# try to import wandb
+try:
+    import wandb
+    has_wandb = True
+except:
+    has_wandb = False
+
 # Will error if the minimal version of diffusers is not installed. Remove at your own risks.
 check_min_version("0.15.0.dev0")
 
@@ -714,6 +721,9 @@ def main():
     add_hook(unet_teacher, acts_tea, mapping_layers_tea)
     add_hook(unet, acts_stu, mapping_layers_stu)
 
+    # get wandb_tracker (if it exists)
+    wandb_tracker = accelerator.get_tracker("wandb")
+
     for epoch in range(first_epoch, args.num_train_epochs):
 
         unet.train()
@@ -808,7 +818,16 @@ def main():
                     ema_unet.step(unet.parameters())
                 progress_bar.update(1)
                 global_step += 1
-                accelerator.log({"train_loss": train_loss}, step=global_step)
+                accelerator.log(
+                    {
+                        "train_loss": train_loss, 
+                        "loss_sd": loss_sd,
+                        "loss_kd_output": loss_kd_output,
+                        "loss_kd_feat": loss_kd_feat,
+                        "lr": lr_scheduler.get_last_lr()[0]
+                    }, 
+                    step=global_step
+                )
 
                 if accelerator.is_main_process:
                     with open(csv_log_path, 'a') as logfile:
