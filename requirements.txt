@@ -7,3 +7,4 @@ open_clip_torch==2.18.0
 accelerate==0.18.0
 datasets==2.11.0
 peft==0.2.0
+wandb==0.15.11
