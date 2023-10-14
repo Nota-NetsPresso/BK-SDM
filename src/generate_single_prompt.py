@@ -48,16 +48,15 @@ if __name__ == "__main__":
     save_path = os.path.join(args.save_dir, args.val_prompt)
     os.makedirs(save_path, exist_ok=True)
 
-    t0 = time.time()
+    t0 = time.perf_counter()
     for i in range(args.num_images):
-        print(f"Generate {args.val_prompt} --- {i} | {args.num_inference_steps} steps")
+        print(f"Generate {args.val_prompt} --- {i}")
         img = pipeline.generate(prompt = args.val_prompt,
                                 n_steps = args.num_inference_steps,
-                                img_sz = args.img_sz)
+                                img_sz = args.img_sz)[0]
         img.save(os.path.join(save_path, f"{i}.png"))
         img.close()
 
     pipeline.clear()
     print(f"Save to {save_path}")
-    print(f"{time.time()-t0} sec elapsed")
-
+    print(f"{(time.perf_counter()-t0):.2f} sec elapsed")
