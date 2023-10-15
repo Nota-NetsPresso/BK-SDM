@@ -179,6 +179,26 @@ On a single 3090 GPU, '(2)' takes ~10 hours per model, and '(3)' takes a few min
     # python3 src/generate.py --model_id nota-ai/bk-sdm-tiny --save_dir ./results/bk-sdm-tiny  
     ```
 
+  [Batched generation] Increase `--batch_sz` (default: 1) for a faster inference at the cost of higher VRAM usage. Thanks [@Godofnothing](https://github.com/Godofnothing) for providing this feature :)
+
+  <details>
+  <summary> Click for inference cost details. 
+  </summary>
+
+  * Setup: BK-SDM-Small on MS-COCO 30K image generation
+  * We used an eval batch size of 1 for our paper results. Different batch sizes affect the sampling of random latent codes, resulting in slightly different generation scores.
+
+      | Eval Batch Size | 1 | 2 | 4 | 8 |
+      |---|:---:|:---:|:---:|:---:|
+      | GPU Memory | 4.9GB | 6.3GB | 11.3GB | 19.6GB |
+      | Generation Time | 9.4h | 7.9h | 7.6h | 7.3h |
+      | FID | 16.98 | 17.01 | 17.16 | 16.97 |
+      | IS | 31.68 | 31.20 | 31.62 | 31.22 |
+      | CLIP Score | 0.2677 | 0.2679 | 0.2677 | 0.2675 |
+
+  </details>
+
+
 - (3) Compute FID, IS, and CLIP score:
     ```bash
     bash scripts/eval_scores.sh
