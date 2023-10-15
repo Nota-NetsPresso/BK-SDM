@@ -22,6 +22,7 @@ def parse_args():
     parser.add_argument("--seed", type=int, default=1234)
     parser.add_argument("--img_sz", type=int, default=512)
     parser.add_argument("--img_resz", type=int, default=256)
+    parser.add_argument("--batch_sz", type=int, default=1)
 
     args = parser.parse_args()
     return args
@@ -52,23 +53,24 @@ if __name__ == "__main__":
     file_list = get_file_list_from_csv(args.data_list)
     params_str = pipeline.get_sdm_params()
     
-    t0 = time.time()
-    for i, file_info in enumerate(file_list):
-        img_name = file_info[0]
-        val_prompt = file_info[1]
+    t0 = time.perf_counter()
+    for batch_start in range(0, len(file_list), args.batch_sz):
+        batch_end = batch_start + args.batch_sz
+        
+        img_names = [file_info[0] for file_info in file_list[batch_start: batch_end]]
+        val_prompts = [file_info[1] for file_info in file_list[batch_start: batch_end]]
+                    
+        imgs = pipeline.generate(prompt = val_prompts,
+                                 n_steps = args.num_inference_steps,
+                                 img_sz = args.img_sz)
 
-        print("---")
-        print(f"{i}/{len(file_list)} | {img_name} {val_prompt} | {args.num_inference_steps} steps")
-        print(params_str)
-
-        img = pipeline.generate(prompt = val_prompt,
-                                n_steps = args.num_inference_steps,
-                                img_sz = args.img_sz)
-        img.save(os.path.join(save_dir_im512, img_name))
-        img.close()
+        for i, (img, img_name, val_prompt) in enumerate(zip(imgs, img_names, val_prompts)):
+            img.save(os.path.join(save_dir_im512, img_name))
+            img.close()
+            print(f"{batch_start + i}/{len(file_list)} | {img_name} {val_prompt}")
+        print(f"---{params_str}")
 
     pipeline.clear()
     
     change_img_size(save_dir_im512, save_dir_im256, args.img_resz)
-    print(f"{time.time()-t0} sec elapsed")
-
+    print(f"{(time.perf_counter()-t0):.2f} sec elapsed")

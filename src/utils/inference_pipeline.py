@@ -9,6 +9,8 @@ import torch
 import gc
 import json
 from peft import LoraModel, LoraConfig, set_peft_model_state_dict
+from typing import Union, List
+from PIL import Image
 
 diffusers_version = int(diffusers.__version__.split('.')[1])
 
@@ -41,15 +43,15 @@ class InferencePipeline:
 
         self.generator = torch.Generator(device=self.device).manual_seed(self.seed)
 
-    def generate(self, prompt: str, n_steps: int, img_sz: int):
+    def generate(self, prompt: Union[str, List[str]], n_steps: int, img_sz: int) -> List[Image.Image]:
         out = self.pipe(
             prompt,
             num_inference_steps=n_steps,
             height = img_sz,
             width = img_sz,
             generator=self.generator,
-        ) 
-        return out.images[0]
+        )
+        return out.images
     
     def _count_params(self, model):
         return sum(p.numel() for p in model.parameters())
