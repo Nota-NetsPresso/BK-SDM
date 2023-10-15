@@ -1,6 +1,6 @@
 # Block-removed Knowledge-distilled Stable Diffusion
 
-This is the official codebase for [**BK-SDM: Architecturally Compressed Stable Diffusion for Efficient Text-to-Image Generation**](https://openreview.net/forum?id=bOVydU0XKC) [[ICCV 2023 Demo Track](https://iccv2023.thecvf.com/)] [[ICML 2023 Workshop on ES-FoMo](https://es-fomo.com/)].
+Official codebase for [**BK-SDM: Architecturally Compressed Stable Diffusion for Efficient Text-to-Image Generation**](https://openreview.net/forum?id=bOVydU0XKC) [[ArXiv Tech Report](https://arxiv.org/abs/2305.15798)] [[ICCV 2023 Demo Track](https://iccv2023.thecvf.com/demos-111.php))] [[ICML 2023 Workshop on ES-FoMo](https://es-fomo.com/)].
 
 
 BK-SDMs are lightweight text-to-image (T2I) synthesis models: 
@@ -10,10 +10,10 @@ BK-SDMs are lightweight text-to-image (T2I) synthesis models:
 ⚡Quick Links: [KD Pretraining](https://github.com/Nota-NetsPresso/BK-SDM#distillation-pretraining) | [Evaluation on MS-COCO](https://github.com/Nota-NetsPresso/BK-SDM#evaluation-on-ms-coco-benchmark) | [DreamBooth Finetuning](https://github.com/Nota-NetsPresso/BK-SDM#dreambooth-finetuning-with-peft) | [Demo](https://github.com/Nota-NetsPresso/BK-SDM#gradio-demo)
 
 ## Notice
-  - [Aug/23/2023] Release Core ML weights of BK-SDMs for iOS and macOS.
-  - [Aug/20/2023] Release finetuning code for personalized T2I.
-  - [Aug/14/2023] Release BK-SDM-*-2M models (trained with **10× more data**).
-  - [Aug/12/2023] 🎉**Release pretraining code** for general-purpose T2I. 
+  - [Aug/23/2023] Release [Core ML weights](https://github.com/Nota-NetsPresso/BK-SDM#core-ml-weights) of BK-SDMs (4-sec inference on iPhone 14). 
+  - [Aug/20/2023] Release finetuning code for efficient personalized T2I.
+  - [Aug/14/2023] Release BK-SDM-*-2M models (trained with 10× more data).
+  - [Aug/12/2023] 🎉**Release pretraining code** for efficient general-purpose T2I. 
     - MODEL_CARD.md includes [the process of distillation pretraining](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#distillation-pretraining) and [results using various data volumes](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#effect-of-different-data-sizes-for-training-bk-sdm-small).
   - [Aug/02/2023] [Segmind](https://www.segmind.com/) introduces [their BK-SDM implementation](https://github.com/segmind/distill-sd), big thanks!
   - [Aug/01/2023] Hugging Face [Spaces of the week 🔥](https://huggingface.co/spaces) introduces [our demo](https://huggingface.co/spaces/nota-ai/compressed-stable-diffusion), many thanks!
@@ -251,6 +251,8 @@ Check out our [Gradio demo](https://huggingface.co/spaces/nota-ai/compressed-sta
     
 ## Core ML Weights
 For iOS or macOS applications, we have converted our models to Core ML format. They are available at 🤗Hugging Face Models ([nota-ai/coreml-bk-sdm](https://huggingface.co/nota-ai/coreml-bk-sdm)) and can be used with Apple's [Core ML Stable Diffusion library](https://github.com/apple/ml-stable-diffusion).
+
+- 4-sec inference on iPhone 14 (with 10 denoising steps): [results](https://huggingface.co/nota-ai/coreml-bk-sdm#deployment-results)
 
 ## License
 This project, along with its weights, is subject to the [CreativeML Open RAIL-M license](LICENSE), which aims to mitigate any potential negative effects arising from the use of highly advanced machine learning systems. [A summary of this license](https://huggingface.co/blog/stable_diffusion#license) is as follows.
