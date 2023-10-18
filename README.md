@@ -34,6 +34,11 @@ git clone https://github.com/Nota-NetsPresso/BK-SDM.git
 cd BK-SDM
 pip install -r requirements.txt
 ```
+#### Note on the torch versions we've used:
+- `torch 1.13.1` for MS-COCO evaluation & DreamBooth finetuning on a single 24GB RTX3090
+- `torch 2.0.1` for KD pretraining on a single 80GB A100
+  - If pretraining with a total batch size of 256 on A100 causes out-of-GPU-memory, check torch version & consider upgrading to `torch>2.0.0`.
+
 
 ## Minimal Example with 🤗[Diffusers](https://github.com/huggingface/diffusers)
 
