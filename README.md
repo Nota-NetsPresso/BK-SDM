@@ -278,7 +278,7 @@ This project, along with its weights, is subject to the [CreativeML Open RAIL-M 
 ## Citation
 ```bibtex
 @article{kim2023architectural,
-  title={On Architectural Compression of Text-to-Image Diffusion Models},
+  title={BK-SDM: A Lightweight, Fast, and Cheap Version of Stable Diffusion},
   author={Kim, Bo-Kyeong and Song, Hyoung-Kyu and Castells, Thibault and Choi, Shinkook},
   journal={arXiv preprint arXiv:2305.15798},
   year={2023},
