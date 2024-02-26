@@ -10,8 +10,7 @@ from utils.misc import get_file_list_from_csv, change_img_size
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model_id", type=str, default="nota-ai/bk-sdm-small",
-                        help="CompVis/stable-diffusion-v1-4, nota-ai/bk-sdm-base, nota-ai/bk-sdm-small, nota-ai/bk-sdm-tiny")    
+    parser.add_argument("--model_id", type=str, default="nota-ai/bk-sdm-small")    
     parser.add_argument("--save_dir", type=str, default="./results/bk-sdm-small",
                         help="$save_dir/{im256, im512} are created for saving 256x256 and 512x512 images")
     parser.add_argument("--unet_path", type=str, default=None)   
@@ -35,20 +34,16 @@ if __name__ == "__main__":
                                 device = args.device)
     pipeline.set_pipe_and_generator()    
 
-    if args.unet_path is not None: # use a separate trained unet for generation
-        if args.model_id != "CompVis/stable-diffusion-v1-4" and not args.model_id.startswith("nota-ai/bk-sdm"):
-            raise ValueError("args.model_id must be either 'CompVis/stable-diffusion-v1-4' or 'nota-ai/bk-sdm-*'"+
-                             f" for text encoder and image decoder\n  ** current args.model_id: {args.model_id}")
-        
+    if args.unet_path is not None: # use a separate trained unet for generation        
         from diffusers import UNet2DConditionModel 
         unet = UNet2DConditionModel.from_pretrained(args.unet_path, subfolder='unet')
         pipeline.pipe.unet = unet.half().to(args.device)
         print(f"** load unet from {args.unet_path}")        
 
-    save_dir_im512 = os.path.join(args.save_dir, 'im512')
-    os.makedirs(save_dir_im512, exist_ok=True)
-    save_dir_im256 = os.path.join(args.save_dir, 'im256')
-    os.makedirs(save_dir_im256, exist_ok=True)       
+    save_dir_src = os.path.join(args.save_dir, f'im{args.img_sz}') # for model's raw output images
+    os.makedirs(save_dir_src, exist_ok=True)
+    save_dir_tgt = os.path.join(args.save_dir, f'im{args.img_resz}') # for resized images for ms-coco benchmark
+    os.makedirs(save_dir_tgt, exist_ok=True)       
 
     file_list = get_file_list_from_csv(args.data_list)
     params_str = pipeline.get_sdm_params()
@@ -65,12 +60,12 @@ if __name__ == "__main__":
                                  img_sz = args.img_sz)
 
         for i, (img, img_name, val_prompt) in enumerate(zip(imgs, img_names, val_prompts)):
-            img.save(os.path.join(save_dir_im512, img_name))
+            img.save(os.path.join(save_dir_src, img_name))
             img.close()
             print(f"{batch_start + i}/{len(file_list)} | {img_name} {val_prompt}")
         print(f"---{params_str}")
 
     pipeline.clear()
     
-    change_img_size(save_dir_im512, save_dir_im256, args.img_resz)
+    change_img_size(save_dir_src, save_dir_tgt, args.img_resz)
     print(f"{(time.perf_counter()-t0):.2f} sec elapsed")
