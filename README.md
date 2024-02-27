@@ -239,8 +239,8 @@ On a single 3090 GPU, '(2)' takes ~10 hours per model, and '(3)' takes a few min
   bash scripts/get_mscoco_files.sh
   bash scripts/generate_with_trained_unet.sh
   ```
-- A trained U-Net is used for [Step (2) of the benchmark evaluation](https://github.com/Nota-NetsPresso/BK-SDM#code-using-bk-sdm-small-as-default).
-- To test with [a specific checkpoint](https://github.com/Nota-NetsPresso/BK-SDM/blob/60939ebaea65271579df734cb3ad44e1f84ca18f/scripts/generate_with_trained_unet.sh#L26), modify `--unet_path` by referring to [the example directory structure](https://github.com/Nota-NetsPresso/BK-SDM/blob/60939ebaea65271579df734cb3ad44e1f84ca18f/scripts/generate_with_trained_unet.sh#L7-L17).
+- A trained U-Net is used for `Step (2) Generation` in the above benchmark evaluation.
+- To test with [a specific checkpoint](https://github.com/Nota-NetsPresso/BK-SDM/blob/c8d774ad26a3659be2e0c594e481314f9c7c4d85/scripts/generate_with_trained_unet.sh#L28), modify `--unet_path` by referring to [the example directory structure](https://github.com/Nota-NetsPresso/BK-SDM/blob/c8d774ad26a3659be2e0c594e481314f9c7c4d85/scripts/generate_with_trained_unet.sh#L7-L17).
 
 #### Results on Zero-shot MS-COCO 256×256 30K
 See [Results in MODEL_CARD.md](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#results-on-ms-coco-benchmark)
