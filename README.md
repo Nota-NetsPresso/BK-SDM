@@ -1,15 +1,16 @@
 # Block-removed Knowledge-distilled Stable Diffusion
 
-Official codebase for [**BK-SDM: Architecturally Compressed Stable Diffusion for Efficient Text-to-Image Generation**](https://openreview.net/forum?id=bOVydU0XKC) [[ArXiv Tech Report](https://arxiv.org/abs/2305.15798)] [[ICCV 2023 Demo Track](https://iccv2023.thecvf.com/demos-111.php))] [[ICML 2023 Workshop on ES-FoMo](https://es-fomo.com/)].
-
+Official codebase for [**BK-SDM: Architecturally Compressed Stable Diffusion for Efficient Text-to-Image Generation**](https://openreview.net/forum?id=bOVydU0XKC) [[ArXiv](https://arxiv.org/abs/2305.15798)] [[ICCV 2023 Demo Track](https://iccv2023.thecvf.com/demos-111.php)] [[ICML 2023 Workshop on ES-FoMo](https://es-fomo.com/)].
 
 BK-SDMs are lightweight text-to-image (T2I) synthesis models: 
-  - Certain residual and attention blocks are eliminated from the U-Net of [SD-v1.4](https://huggingface.co/CompVis/stable-diffusion-v1-4).
+  - Certain residual & attention blocks are eliminated from the U-Net of SD.
+    - Applicable to all SD-v1 & v2 — e.g., [v1.4](https://huggingface.co/CompVis/stable-diffusion-v1-4); [v1.5](https://huggingface.co/runwayml/stable-diffusion-v1-5); [v2.1-base](https://huggingface.co/stabilityai/stable-diffusion-2-1-base); [v2.1](https://huggingface.co/stabilityai/stable-diffusion-2-1) 
   - Distillation pretraining is conducted with very limited data, but it (surprisingly) remains effective.
 
 ⚡Quick Links: [KD Pretraining](https://github.com/Nota-NetsPresso/BK-SDM#distillation-pretraining) | [Evaluation on MS-COCO](https://github.com/Nota-NetsPresso/BK-SDM#evaluation-on-ms-coco-benchmark) | [DreamBooth Finetuning](https://github.com/Nota-NetsPresso/BK-SDM#dreambooth-finetuning-with-peft) | [Demo](https://github.com/Nota-NetsPresso/BK-SDM#gradio-demo)
 
 ## Notice
+  - [Dec/07/2023] [KOALA](https://youngwanlee.github.io/KOALA/) introduces BK-SDXL baselines, big thanks!
   - [Aug/23/2023] Release [Core ML weights](https://github.com/Nota-NetsPresso/BK-SDM#core-ml-weights) of BK-SDMs (4-sec inference on iPhone 14). 
   - [Aug/20/2023] Release finetuning code for efficient personalized T2I.
   - [Aug/14/2023] Release BK-SDM-*-2M models (trained with 10× more data).
@@ -21,7 +22,7 @@ BK-SDMs are lightweight text-to-image (T2I) synthesis models:
  
 ## Model Description
 - See [Compression Method in MODEL_CARD.md](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#compression-method)
-- Available at 🤗Hugging Face Models
+- Available at 🤗Hugging Face Models — Compressed from SD-v1.4
   - BK-SDM-{[Base](https://huggingface.co/nota-ai/bk-sdm-base), [Small](https://huggingface.co/nota-ai/bk-sdm-small), [Tiny](https://huggingface.co/nota-ai/bk-sdm-tiny)}: trained with 0.22M LAION pairs, 50K training iterations. 
   - BK-SDM-{[Base-2M](https://huggingface.co/nota-ai/bk-sdm-base-2m), [Small-2M](https://huggingface.co/nota-ai/bk-sdm-small-2m), [Tiny-2M](https://huggingface.co/nota-ai/bk-sdm-tiny-2m)}: 2.3M LAION pairs, 50K training iterations.
 
@@ -76,49 +77,70 @@ image.save("example.png")
 
 
 ## Distillation Pretraining
-Our code was based on [train_text_to_image.py](https://github.com/huggingface/diffusers/tree/v0.15.0/examples/text_to_image) of Diffusers `0.15.0.dev0`. To access the latest version, use [this link](https://github.com/huggingface/diffusers/blob/main/examples/text_to_image/train_text_to_image.py).
+Our code was based on [train_text_to_image.py](https://github.com/huggingface/diffusers/tree/v0.15.0/examples/text_to_image) of Diffusers `0.15.0`. To access the latest version, use [this link](https://github.com/huggingface/diffusers/blob/main/examples/text_to_image/train_text_to_image.py).
 
 #### [Optional] Toy to check runnability
   ```bash
   bash scripts/get_laion_data.sh preprocessed_11k
   bash scripts/kd_train_toy.sh
   ```
+
+<details>
+<summary>Note</summary>
+
 - A toy dataset (11K img-txt pairs) is downloaded at `./data/laion_aes/preprocessed_11k` (1.7GB in tar.gz; 1.8GB data folder).
 - A toy script can be used to verify the code executability and find the batch size that matches your GPU. With a batch size of `8` (=4×2), training BK-SDM-Base for 20 iterations takes about 5 minutes and 22GB GPU memory.
 
+</details>
+
 #### Single-gpu training for BK-SDM-{[Base](https://huggingface.co/nota-ai/bk-sdm-base), [Small](https://huggingface.co/nota-ai/bk-sdm-small), [Tiny](https://huggingface.co/nota-ai/bk-sdm-tiny)}
+
   ```bash
   bash scripts/get_laion_data.sh preprocessed_212k
   bash scripts/kd_train.sh
   ```
+<details>
+<summary>Note</summary>
+
 - The dataset with 212K (=0.22M) pairs is downloaded at `./data/laion_aes/preprocessed_212k` (18GB tar.gz; 20GB data folder).
 - With a batch size of `256` (=4×64), training BK-SDM-Base for 50K iterations takes about 300 hours and 53GB GPU memory. With a batch size of `64` (=4×16), it takes 60 hours and 28GB GPU memory.
 - Training BK-SDM-{Small, Tiny} results in 5∼10% decrease in GPU memory usage.
 
+</details>
 
 #### Single-gpu training for BK-SDM-{[Base-2M](https://huggingface.co/nota-ai/bk-sdm-base-2m), [Small-2M](https://huggingface.co/nota-ai/bk-sdm-small-2m), [Tiny-2M](https://huggingface.co/nota-ai/bk-sdm-tiny-2m)}
+
   ```bash
   bash scripts/get_laion_data.sh preprocessed_2256k
   bash scripts/kd_train_2m.sh
   ```
+<details>
+<summary>Note</summary>
+
 - The dataset with 2256K (=2.3M) pairs is downloaded at `./data/laion_aes/preprocessed_2256k` (182GB tar.gz; 204GB data folder).
 - Except the dataset, `kd_train_2m.sh` is the same as `kd_train.sh`; given the same number of iterations, the training computation remains identical.
+
+</details>
 
 #### Multi-gpu training
   ```bash
   bash scripts/kd_train_toy_ddp.sh
   ```
+  
+<details>
+<summary>Note</summary>
+
 - Multi-GPU training is supported (sample results: [link](https://github.com/Nota-NetsPresso/BK-SDM/issues/10#issuecomment-1676038203)), although all experiments for our paper were conducted using a single GPU. Thanks [@youngwanLEE](https://github.com/youngwanLEE) for sharing the script :)
 
+</details>
 
-
-#### [After training] Generation with a trained U-Net
+#### Compression of SD-v2 with BK-SDM
   ```bash
-  bash scripts/get_mscoco_files.sh
-  bash scripts/generate_with_trained_unet.sh
+  bash scripts/kd_train_v2-base-im512.sh
+  bash scripts/kd_train_v2-im768.sh
+  
+  # For inference, see: 'scripts/generate_with_trained_unet.sh'  
   ```
-- A trained U-Net is used for [Step (2) of the benchmark evaluation](https://github.com/Nota-NetsPresso/BK-SDM#code-using-bk-sdm-small-as-default).
-- To test with [a specific checkpoint](https://github.com/Nota-NetsPresso/BK-SDM/blob/60939ebaea65271579df734cb3ad44e1f84ca18f/scripts/generate_with_trained_unet.sh#L26), modify `--unet_path` by referring to [the example directory structure](https://github.com/Nota-NetsPresso/BK-SDM/blob/60939ebaea65271579df734cb3ad44e1f84ca18f/scripts/generate_with_trained_unet.sh#L7-L17).
 
 #### Note on training code
   <details>
@@ -155,7 +177,7 @@ Our code was based on [train_text_to_image.py](https://github.com/huggingface/di
 ## Evaluation on MS-COCO Benchmark
 We used the following codes to obtain the results on MS-COCO. After generating 512×512 images with the PNDM scheduler and 25 denoising steps, we downsampled them to 256×256 for computing scores.
 
-#### Code (using BK-SDM-[Small](https://huggingface.co/nota-ai/bk-sdm-small) as default)
+#### Generation with released models (using BK-SDM-[Small](https://huggingface.co/nota-ai/bk-sdm-small) as default)
 On a single 3090 GPU, '(2)' takes ~10 hours per model, and '(3)' takes a few minutes.
 
 - (1) Download `metadata.csv` and `real_im256.npz`:
@@ -210,6 +232,15 @@ On a single 3090 GPU, '(2)' takes ~10 hours per model, and '(3)' takes a few min
 
     # For the other models, modify the `./results/bk-sdm-*` path in the scripts to specify different models.
     ```
+
+
+#### [After training] Generation with a trained U-Net
+  ```bash
+  bash scripts/get_mscoco_files.sh
+  bash scripts/generate_with_trained_unet.sh
+  ```
+- A trained U-Net is used for [Step (2) of the benchmark evaluation](https://github.com/Nota-NetsPresso/BK-SDM#code-using-bk-sdm-small-as-default).
+- To test with [a specific checkpoint](https://github.com/Nota-NetsPresso/BK-SDM/blob/60939ebaea65271579df734cb3ad44e1f84ca18f/scripts/generate_with_trained_unet.sh#L26), modify `--unet_path` by referring to [the example directory structure](https://github.com/Nota-NetsPresso/BK-SDM/blob/60939ebaea65271579df734cb3ad44e1f84ca18f/scripts/generate_with_trained_unet.sh#L7-L17).
 
 #### Results on Zero-shot MS-COCO 256×256 30K
 See [Results in MODEL_CARD.md](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#results-on-ms-coco-benchmark)
@@ -270,7 +301,7 @@ This project, along with its weights, is subject to the [CreativeML Open RAIL-M 
 
 
 ## Acknowledgments
-- [Microsoft for Startups Founders Hub](https://www.microsoft.com/en-us/startups) for generously providing the Azure credits used during pretraining.
+- [Microsoft for Startups Founders Hub](https://www.microsoft.com/en-us/startups) and [Gwangju AICA](http://www.aica-gj.kr/main.php) for generously providing GPU resources.
 - [CompVis](https://github.com/CompVis/latent-diffusion), [Runway](https://runwayml.com/), and [Stability AI](https://stability.ai/) for the pioneering research on Stable Diffusion.
 - [LAION](https://laion.ai/), [Diffusers](https://github.com/huggingface/diffusers), [PEFT](https://github.com/huggingface/peft), [DreamBooth](https://dreambooth.github.io/), [Gradio](https://www.gradio.app/), and [Core ML Stable Diffusion](https://github.com/apple/ml-stable-diffusion) for their valuable contributions.
 

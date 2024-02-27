@@ -3,7 +3,8 @@
 ## Compression Method
 
 ### U-Net Architecture
-Certain residual and attention blocks were eliminated from the U-Net of SDM-v1.4:
+Our method is directly applicable to all SD-v1 and v2 versions, removing specific residual and attention blocks from the U-Net architecture. For further details, refer to [our ArXiv paper](https://arxiv.org/abs/2305.15798). Below, SD-v1.4 is shown as an example.
+
 
 - 1.04B-param [SDM-v1.4](https://huggingface.co/CompVis/stable-diffusion-v1-4) (0.86B-param U-Net): the original source model.
 - 0.76B-param [**BK-SDM-Base**](https://huggingface.co/nota-ai/bk-sdm-base) (0.58B-param U-Net): obtained with ① fewer blocks in outer stages.
