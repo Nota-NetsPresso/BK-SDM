@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------------
-# Copyright (c) 2023 Nota Inc. All Rights Reserved.
+# Copyright 2023. Nota Inc. All Rights Reserved.
 # Download a subset of LAION-Aesthetics V2 6.5+
 #   ref. original data: https://huggingface.co/datasets/ChristophSchuhmann/improved_aesthetics_6.5plus
 # ------------------------------------------------------------------------------------

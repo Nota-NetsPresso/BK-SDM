@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------------
-# Copyright (c) 2023 Nota Inc. All Rights Reserved.
+# Copyright 2023. Nota Inc. All Rights Reserved.
 # Code modified from https://github.com/huggingface/peft/blob/v0.1.0/examples/lora_dreambooth/train_dreambooth.py
 # ------------------------------------------------------------------------------------
 

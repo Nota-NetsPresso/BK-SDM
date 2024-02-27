@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------------
-# Copyright (c) 2023 Nota Inc. All Rights Reserved.
+# Copyright 2023. Nota Inc. All Rights Reserved.
 # Please ensure that the following libraries are successfully installed:
 #   for IS, https://github.com/toshas/torch-fidelity
 #   for FID, https://github.com/mseitzer/pytorch-fid

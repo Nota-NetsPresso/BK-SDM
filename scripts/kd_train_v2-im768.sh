@@ -1,7 +1,6 @@
 # ------------------------------------------------------------------------------------
-# Copyright (c) 2023 Nota Inc. All Rights Reserved.
+# Copyright 2024. Nota Inc. All Rights Reserved.
 # Code modified from https://github.com/huggingface/diffusers/tree/v0.15.0/examples/text_to_image
-#   cf. The exact diffusers version we used, 0.15.0.dev0, appears to be inaccessible on the Web.
 # ------------------------------------------------------------------------------------
 
 MODEL_NAME="stabilityai/stable-diffusion-2-1" # image size: 768x768

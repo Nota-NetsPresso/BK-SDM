@@ -1,4 +1,4 @@
-torch<2.0.0
+torch>2.0.0
 transformers==4.27.4
 diffusers==0.15.0
 torch-fidelity==0.3.0
