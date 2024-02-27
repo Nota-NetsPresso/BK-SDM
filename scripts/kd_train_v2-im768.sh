@@ -1,16 +1,16 @@
 # ------------------------------------------------------------------------------------
-# Copyright 2023. Nota Inc. All Rights Reserved.
+# Copyright 2024. Nota Inc. All Rights Reserved.
 # Code modified from https://github.com/huggingface/diffusers/tree/v0.15.0/examples/text_to_image
 # ------------------------------------------------------------------------------------
 
-MODEL_NAME="CompVis/stable-diffusion-v1-4"
-TRAIN_DATA_DIR="./data/laion_aes/preprocessed_2256k" # please adjust it if needed
-UNET_CONFIG_PATH="./src/unet_config"
+MODEL_NAME="stabilityai/stable-diffusion-2-1" # image size: 768x768
+TRAIN_DATA_DIR="./data/laion_aes/preprocessed_212k" # please adjust it if needed
+UNET_CONFIG_PATH="./src/unet_config_v2"
 
 UNET_NAME="bk_small" # option: ["bk_base", "bk_small", "bk_tiny"]
-OUTPUT_DIR="./results/kd_"$UNET_NAME"_2m" # please adjust it if needed
+OUTPUT_DIR="./results/v2_kd_"$UNET_NAME # please adjust it if needed
 
-BATCH_SIZE=64
+BATCH_SIZE=32
 GRAD_ACCUMULATION=4
 
 StartTime=$(date +%s)
@@ -19,7 +19,7 @@ CUDA_VISIBLE_DEVICES=1 accelerate launch src/kd_train_text_to_image.py \
   --pretrained_model_name_or_path $MODEL_NAME \
   --train_data_dir $TRAIN_DATA_DIR\
   --use_ema \
-  --resolution 512 --center_crop --random_flip \
+  --resolution 768 --center_crop --random_flip \
   --train_batch_size $BATCH_SIZE \
   --gradient_checkpointing \
   --mixed_precision="fp16" \
@@ -40,4 +40,3 @@ CUDA_VISIBLE_DEVICES=1 accelerate launch src/kd_train_text_to_image.py \
 
 EndTime=$(date +%s)
 echo "** KD training takes $(($EndTime - $StartTime)) seconds."
-

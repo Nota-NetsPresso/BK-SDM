@@ -1,16 +1,16 @@
 # ------------------------------------------------------------------------------------
-# Copyright 2023. Nota Inc. All Rights Reserved.
+# Copyright 2024. Nota Inc. All Rights Reserved.
 # Code modified from https://github.com/huggingface/diffusers/tree/v0.15.0/examples/text_to_image
 # ------------------------------------------------------------------------------------
 
-MODEL_NAME="CompVis/stable-diffusion-v1-4"
-TRAIN_DATA_DIR="./data/laion_aes/preprocessed_2256k" # please adjust it if needed
-UNET_CONFIG_PATH="./src/unet_config"
+MODEL_NAME="stabilityai/stable-diffusion-2-1-base" # image size: 512x512
+TRAIN_DATA_DIR="./data/laion_aes/preprocessed_212k" # please adjust it if needed
+UNET_CONFIG_PATH="./src/unet_config_v2-base"
 
 UNET_NAME="bk_small" # option: ["bk_base", "bk_small", "bk_tiny"]
-OUTPUT_DIR="./results/kd_"$UNET_NAME"_2m" # please adjust it if needed
+OUTPUT_DIR="./results/v2-base_kd_"$UNET_NAME # please adjust it if needed
 
-BATCH_SIZE=64
+BATCH_SIZE=32
 GRAD_ACCUMULATION=4
 
 StartTime=$(date +%s)

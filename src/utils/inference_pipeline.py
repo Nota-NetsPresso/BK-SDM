@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------------
-# Copyright (c) 2023 Nota Inc. All Rights Reserved.
+# Copyright 2023. Nota Inc. All Rights Reserved.
 # Code modified from https://huggingface.co/blog/stable_diffusion
 # ------------------------------------------------------------------------------------
 

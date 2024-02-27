@@ -1,7 +1,6 @@
 # ------------------------------------------------------------------------------------
-# Copyright (c) 2023 Nota Inc. All Rights Reserved.
+# Copyright 2023. Nota Inc. All Rights Reserved.
 # Code modified from https://github.com/huggingface/diffusers/blob/v0.15.0/examples/text_to_image/train_text_to_image.py
-#   cf. The exact diffusers version we used, 0.15.0.dev0, appears to be inaccessible on the Web.
 # ------------------------------------------------------------------------------------
 #!/usr/bin/env python
 # coding=utf-8
@@ -61,7 +60,7 @@ except:
     has_wandb = False
 
 # Will error if the minimal version of diffusers is not installed. Remove at your own risks.
-check_min_version("0.15.0.dev0")
+check_min_version("0.15.0")
 
 logger = get_logger(__name__, log_level="INFO")
 

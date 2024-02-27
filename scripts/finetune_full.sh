@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------------
-# Copyright (c) 2023 Nota Inc. All Rights Reserved.
+# Copyright 2023. Nota Inc. All Rights Reserved.
 # Code modified from https://github.com/huggingface/peft/tree/v0.1.0#parameter-efficient-tuning-of-diffusion-models
 # ------------------------------------------------------------------------------------
 

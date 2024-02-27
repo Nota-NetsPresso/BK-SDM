@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------------
-# Copyright (c) 2023 Nota Inc. All Rights Reserved.
+# Copyright 2023. Nota Inc. All Rights Reserved.
 # ------------------------------------------------------------------------------------
 
 IDENTIFIER_NAME="sks11df" # must be the unique identifier used in DreamBooth finetuning
