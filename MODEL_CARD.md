@@ -3,7 +3,7 @@
 ## Compression Method
 
 ### U-Net Architecture
-Our method is directly applicable to all SD-v1 and v2 versions, removing specific residual and attention blocks from the U-Net architecture. For further details, refer to [our ArXiv paper](https://arxiv.org/abs/2305.15798). Below, SD-v1.4 is shown as an example.
+Our method is directly applicable to **all** SD-v1 and v2 versions, removing specific residual and attention blocks from the U-Net architecture. For further details, refer to [our ArXiv paper](https://arxiv.org/abs/2305.15798). Below, SD-v1.4 is shown as an example.
 
 
 - 1.04B-param [SDM-v1.4](https://huggingface.co/CompVis/stable-diffusion-v1-4) (0.86B-param U-Net): the original source model.
@@ -39,8 +39,15 @@ The following table shows the results on 30K samples from the MS-COCO validation
 
 ### Zero-shot MS-COCO 256×256 30K
 
-- Our models were drawn at the 50K-th training iteration.
+#### Compression of SD-v2.1-base
+| Model | FID↓ | IS↑ | CLIP Score↑<br>(ViT-g/14) | # Params,<br>U-Net | # Params,<br>Whole SDM |
+|---|:---:|:---:|:---:|:---:|:---:|
+| [Stable Diffusion v2.1-base](https://huggingface.co/stabilityai/stable-diffusion-2-1-base) | 13.93 | 35.93 | 0.3075 | 0.87B | 1.26B |
+| [BK-SDM-v2-Base](https://huggingface.co/nota-ai/bk-sdm-v2-base) (Ours) | 15.85 | 31.70 | 0.2868 | 0.59B | 0.98B |
+| [BK-SDM-v2-Small](https://huggingface.co/nota-ai/bk-sdm-v2-small) (Ours) | 16.61 | 31.73 | 0.2901 | 0.49B | 0.88B |
+| [BK-SDM-v2-Tiny](https://huggingface.co/nota-ai/bk-sdm-v2-tiny) (Ours) | 15.68 | 31.64 | 0.2897 | 0.33B | 0.72B |
 
+#### Compression of SD-v1.4
 | Model | FID↓ | IS↑ | CLIP Score↑<br>(ViT-g/14) | # Params,<br>U-Net | # Params,<br>Whole SDM |
 |---|:---:|:---:|:---:|:---:|:---:|
 | [Stable Diffusion v1.4](https://huggingface.co/CompVis/stable-diffusion-v1-4) | 13.05 | 36.76 | 0.2958 | 0.86B | 1.04B |
