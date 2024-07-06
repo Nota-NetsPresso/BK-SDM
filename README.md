@@ -1,6 +1,6 @@
 # Block-removed Knowledge-distilled Stable Diffusion
 
-Official codebase for [**BK-SDM: Architecturally Compressed Stable Diffusion for Efficient Text-to-Image Generation**](https://openreview.net/forum?id=bOVydU0XKC) [[ArXiv](https://arxiv.org/abs/2305.15798)] [[ICCV 2023 Demo Track](https://iccv2023.thecvf.com/demos-111.php)] [[ICML 2023 Workshop on ES-FoMo](https://es-fomo.com/)].
+Official codebase for [**BK-SDM: A Lightweight, Fast, and Cheap Version of Stable Diffusion**](https://arxiv.org/abs/2305.15798) [[ArXiv](https://arxiv.org/abs/2305.15798)] [[ECCV 2024](https://eccv.ecva.net/)].
 
 BK-SDMs are lightweight text-to-image (T2I) synthesis models: 
   - Certain residual & attention blocks are eliminated from the U-Net of SD.
@@ -10,22 +10,26 @@ BK-SDMs are lightweight text-to-image (T2I) synthesis models:
 ⚡Quick Links: [KD Pretraining](https://github.com/Nota-NetsPresso/BK-SDM#distillation-pretraining) | [Evaluation on MS-COCO](https://github.com/Nota-NetsPresso/BK-SDM#evaluation-on-ms-coco-benchmark) | [DreamBooth Finetuning](https://github.com/Nota-NetsPresso/BK-SDM#dreambooth-finetuning-with-peft) | [Demo](https://github.com/Nota-NetsPresso/BK-SDM#gradio-demo)
 
 ## Notice
-  - [Dec/07/2023] [KOALA](https://youngwanlee.github.io/KOALA/) introduces BK-SDXL baselines, big thanks!
-  - [Aug/23/2023] Release [Core ML weights](https://github.com/Nota-NetsPresso/BK-SDM#core-ml-weights) of BK-SDMs (4-sec inference on iPhone 14). 
-  - [Aug/20/2023] Release finetuning code for efficient personalized T2I.
-  - [Aug/14/2023] Release BK-SDM-*-2M models (trained with 10× more data).
-  - [Aug/12/2023] 🎉**Release pretraining code** for efficient general-purpose T2I. 
+  - [July/2024] 🎉BK-SDM is **accepted to [ECCV 2024](https://eccv.ecva.net/)**!
+    - Preliminary versions were presented at [ICCV 2023 Demo Track](https://iccv2023.thecvf.com/demos-111.php) & [ICML 2023 Workshop on ES-FoMo](https://openreview.net/forum?id=bOVydU0XKC).
+  - [Apr/2024] [EdgeFusion](https://arxiv.org/abs/2404.11925) is accepted to [CVPR 2024 Workshop on EDGE](https://cvpr24-edge.github.io/)!
+    - While enhancing BK-SDM-Tiny with LCM, it highlights the benefits of improved data and distillation.
+  - [Dec/2023] [KOALA](https://youngwanlee.github.io/KOALA/) introduces BK-SDXL baselines, big thanks!
+  - [Aug/2023] Release [Core ML weights](https://github.com/Nota-NetsPresso/BK-SDM#core-ml-weights) of BK-SDMs (4-sec inference on iPhone 14). 
+  - [Aug/2023] Release finetuning code for efficient personalized T2I.
+  - [Aug/2023] 🎉**Release pretraining code** for efficient general-purpose T2I. 
     - MODEL_CARD.md includes [the process of distillation pretraining](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#distillation-pretraining) and [results using various data volumes](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#effect-of-different-data-sizes-for-training-bk-sdm-small).
-  - [Aug/02/2023] [Segmind](https://www.segmind.com/) introduces [their BK-SDM implementation](https://github.com/segmind/distill-sd), big thanks!
-  - [Aug/01/2023] Hugging Face [Spaces of the week 🔥](https://huggingface.co/spaces) introduces [our demo](https://huggingface.co/spaces/nota-ai/compressed-stable-diffusion), many thanks!
+  - [Aug/2023] [Segmind](https://www.segmind.com/) introduces [their BK-SDM implementation](https://github.com/segmind/distill-sd), big thanks!
+  - [Aug/2023] Hugging Face [Spaces of the week 🔥](https://huggingface.co/spaces) introduces [our demo](https://huggingface.co/spaces/nota-ai/compressed-stable-diffusion), many thanks!
  
  
 ## Model Description
-- See [Compression Method in MODEL_CARD.md](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#compression-method)
-- Available at 🤗Hugging Face Models — Compressed from SD-v1.4
+- The following BK-SDMs are available at 🤗Hugging Face Models. See [Compression Method in MODEL_CARD.md](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#compression-method).
+- Compressed from SD-v1.4:
   - BK-SDM-{[Base](https://huggingface.co/nota-ai/bk-sdm-base), [Small](https://huggingface.co/nota-ai/bk-sdm-small), [Tiny](https://huggingface.co/nota-ai/bk-sdm-tiny)}: trained with 0.22M LAION pairs, 50K training iterations. 
   - BK-SDM-{[Base-2M](https://huggingface.co/nota-ai/bk-sdm-base-2m), [Small-2M](https://huggingface.co/nota-ai/bk-sdm-small-2m), [Tiny-2M](https://huggingface.co/nota-ai/bk-sdm-tiny-2m)}: 2.3M LAION pairs, 50K training iterations.
-
+- Compressed from SD-v2.1-base:
+  - BK-SDM-{[v2-Base](https://huggingface.co/nota-ai/bk-sdm-v2-base), [v2-Small](https://huggingface.co/nota-ai/bk-sdm-v2-small), [v2-Tiny](https://huggingface.co/nota-ai/bk-sdm-v2-tiny)}: trained with 0.22M LAION pairs, 50K training iterations. 
 
 ## Installation
 ```bash
@@ -275,7 +279,6 @@ Our code was based on [train_dreambooth.py](https://github.com/huggingface/peft/
 #### Results of Personalized Generation
 See [DreamBooth Results in MODEL_CARD.md](https://github.com/Nota-NetsPresso/BK-SDM/blob/main/MODEL_CARD.md#personalized-generation-full-finetuning)
 
-
 ## Gradio Demo
 Check out our [Gradio demo](https://huggingface.co/spaces/nota-ai/compressed-stable-diffusion) and the [codes](https://huggingface.co/spaces/nota-ai/compressed-stable-diffusion/tree/main) (main: app.py)!
     <details>
@@ -299,29 +302,19 @@ This project, along with its weights, is subject to the [CreativeML Open RAIL-M 
 3. You may re-distribute the weights and use the model commercially and/or as a service. If you do, please be aware you have to include the same use restrictions as the ones in the license and share a copy of the CreativeML OpenRAIL-M to all your users.
 ```
 
-
 ## Acknowledgments
 - [Microsoft for Startups Founders Hub](https://www.microsoft.com/en-us/startups) and [Gwangju AICA](http://www.aica-gj.kr/main.php) for generously providing GPU resources.
 - [CompVis](https://github.com/CompVis/latent-diffusion), [Runway](https://runwayml.com/), and [Stability AI](https://stability.ai/) for the pioneering research on Stable Diffusion.
 - [LAION](https://laion.ai/), [Diffusers](https://github.com/huggingface/diffusers), [PEFT](https://github.com/huggingface/peft), [DreamBooth](https://dreambooth.github.io/), [Gradio](https://www.gradio.app/), and [Core ML Stable Diffusion](https://github.com/apple/ml-stable-diffusion) for their valuable contributions.
-
+- Conference reviewers for their constructive and fruitful comments.
 
 ## Citation
 ```bibtex
-@article{kim2023architectural,
+@article{kim2023bksdm,
   title={BK-SDM: A Lightweight, Fast, and Cheap Version of Stable Diffusion},
   author={Kim, Bo-Kyeong and Song, Hyoung-Kyu and Castells, Thibault and Choi, Shinkook},
   journal={arXiv preprint arXiv:2305.15798},
   year={2023},
   url={https://arxiv.org/abs/2305.15798}
-}
-```
-```bibtex
-@article{kim2023bksdm,
-  title={BK-SDM: Architecturally Compressed Stable Diffusion for Efficient Text-to-Image Generation},
-  author={Kim, Bo-Kyeong and Song, Hyoung-Kyu and Castells, Thibault and Choi, Shinkook},
-  journal={ICML Workshop on Efficient Systems for Foundation Models (ES-FoMo)},
-  year={2023},
-  url={https://openreview.net/forum?id=bOVydU0XKC}
 }
 ```
